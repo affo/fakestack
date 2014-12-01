@@ -1,0 +1,9 @@
+disable_service key
+disable_service horizon
+disable_service g-reg
+disable_service neutron
+disable_service s-proxy
+disable_service cinder
+disable_service glance
+disable_service q-svc
+disable_service heat
