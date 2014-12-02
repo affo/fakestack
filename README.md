@@ -1,20 +1,21 @@
 # DevStack Playground
+### This project is in __PRE-ALPHA__ state! Do not use it by now!
 
 This repo contains settings for our DevStack playground.
 
-First of all you need [Vagrant](https://www.vagrantup.com/) to start VMs. 
-Then, create a vagrant box:
+First of all you need [Docker](https://www.docker.com/) to start LXCs. 
+To have a full OpenStack environment, you have to pull the two nodes.  
+You can run as many compute nodes as you need!  
 
 ```
-	$ vagrant box add ubuntu/trusty64 --name ubuntu-14.04-x64
+	$ sudo docker pull affear/os_controller
+	$ sudo docker pull affear/os_compute
+	$ sudo docker run affear/os_controller
+	$ sudo docker run affear/os_compute
+	$ sudo docker run affear/os_compute
+	$ sudo docker run affear/os_compute
+	$ sudo docker run affear/os_compute
+	...
 ```
 
-Then:
-
-```
-	$ git clone git@github.com:affear/devstack-playground.git
-	$ cd devstack-playground
-	$ vagrant up
-```
-
-And then enjoy!
+And here it is, your OpenStack testing environment!
