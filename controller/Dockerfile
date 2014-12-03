@@ -25,3 +25,5 @@ RUN git clone https://github.com/openstack-dev/devstack.git
 WORKDIR devstack
 
 ADD localrc .
+
+RUN ./stack.sh
