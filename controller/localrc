@@ -1,11 +1,11 @@
 [[local|localrc]]
 # actual address of your adapter (eth0, etc.)
 HOST_IP=$MY_IP
-FLAT_INTERFACE=eth0
+FLAT_INTERFACE=eth1
 # internal network range for VMs to use
-FIXED_RANGE=10.0.0.0/20
+#FIXED_RANGE=10.0.0.0/20
 # range of floating addresses.. externally accessible from OpenStack
-FLOATING_RANGE=172.17.0.0/16
+#FLOATING_RANGE=172.17.0.0/16
 MULTI_HOST=1
 LOGFILE=/opt/stack/logs/stack.sh.log
 ADMIN_PASSWORD=pwstack
@@ -13,3 +13,17 @@ MYSQL_PASSWORD=pwstack
 RABBIT_PASSWORD=pwstack
 SERVICE_PASSWORD=pwstack
 SERVICE_TOKEN=tokenstack
+
+# misc
+ENABLED_SERVICES=rabbit,mysql
+# horizon and keystone
+ENABLED_SERVICES+=,horizon,key
+# glance
+ENABLED_SERVICES+=,g-api,g-reg,
+# nova
+ENABLED_SERVICES+=n-api,n-crt,n-cond,n-sch,n-cauth
+# heat
+ENABLED_SERVICES+=,heat,h-api,h-api-cfn,h-api-cw,h-eng
+# ceilometer
+ENABLED_SERVICES+=,ceilometer-acentral,ceilometer-collector,ceilometer-api
+ENABLED_SERVICES+=,ceilometer-alarm-notify,ceilometer-alarm-eval

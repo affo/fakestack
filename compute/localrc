@@ -1,8 +1,8 @@
 [[local|localrc]]
 HOST_IP=$MY_IP
-FLAT_INTERFACE=eth0
-FIXED_RANGE=10.0.0.0/20
-FLOATING_RANGE=172.17.0.0/16
+FLAT_INTERFACE=eth1
+#FIXED_RANGE=10.0.0.0/20
+#FLOATING_RANGE=42.42.0.0/16
 MULTI_HOST=1
 LOGFILE=/opt/stack/logs/stack.sh.log
 ADMIN_PASSWORD=pwstack
@@ -10,11 +10,10 @@ MYSQL_PASSWORD=pwstack
 RABBIT_PASSWORD=pwstack
 SERVICE_PASSWORD=pwstack
 SERVICE_TOKEN=tokenstack
-DATABASE_TYPE=mysql
-SERVICE_HOST=??? #--> set to controller's
-MYSQL_HOST=??? #--> set to controller's
-RABBIT_HOST=??? #--> set to controller's
-GLANCE_HOSTPORT=???:9292 #--> set to controller's
-ENABLED_SERVICES=n-cpu,n-net,n-api
+SERVICE_HOST=controller
+MYSQL_HOST=controller
+RABBIT_HOST=controller
 NOVA_VNC_ENABLED=False
 VIRT_DRIVER=nova.virt.fake.FakeDriver
+
+ENABLED_SERVICES=n-cpu,n-net,n-api,ceilometer-acompute
