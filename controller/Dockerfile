@@ -7,7 +7,7 @@ RUN /usr/sbin/enable_insecure_key
 # Updat and install git, sudo
 RUN apt-get update && apt-get install -y git sudo
 
-# Avoid prompt to acept key
+# Avoid prompt to accept key
 RUN ssh -oStrictHostKeyChecking=no github.com uptime
 
 # Determine container auto-assigned IP

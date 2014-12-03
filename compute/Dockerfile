@@ -1,34 +1,30 @@
 FROM phusion/baseimage:latest
-MAINTAINER affear
+MAINTAINER affearteam
 
-ENV HOME /root
+# Enable insecure key for ssh
+RUN /usr/sbin/enable_insecure_key
 
-# Regenerate SSH host keys.
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+# Updat and install git, sudo
+RUN apt-get update && apt-get install -y git sudo
 
-# build instructions
-RUN apt-get update
-RUN apt-get install -y git
+# Avoid prompt to accept key
+RUN ssh -oStrictHostKeyChecking=no github.com uptime
 
-# cloning devstack
-RUN git clone git@github.com:openstack-dev/devstack.git
+# Determine container auto-assigned IP
+RUN export MY_IP=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
-# ADDING SERVICES:
-# <os_service>.sh content:
-#####
-# #!/bin/sh
-# exec /sbin/setuser <os_service> /usr/bin/<os_service> >>/var/log/<os_service>.log 2>&1
-#####
-# In this Dockerfile:
-#####
-# RUN mkdir /etc/service/<os_service>
-# ADD <os_service>.sh /etc/service/<os_service>/run
+# Add the controller alias to hosts
+RUN echo "42.42.255.254 controller" >> /etc/hosts
 
-# copying localrc file
-ADD localrc devstack/
+# Create stack user add to stack gruop and sudo
+RUN groupadd stack
+RUN useradd -g stack -s /bin/bash -d /opt/stack -m stack
+RUN echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN su - stack
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+# Clone DevStack
+RUN git clone https://github.com/openstack-dev/devstack.git
 
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR devstack
+
+ADD localrc .
