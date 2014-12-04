@@ -32,6 +32,6 @@ Install pipework:
 Use pipework:
 
 ```
-	$ HANDLER=$(sudo docker run -d affear/os_controller:test)
+	$ HANDLER=$(docker run -d affear/os_controller:test)
 	$ ./pipework osbr $HANDLER 42.42.255.254/16
 ```
