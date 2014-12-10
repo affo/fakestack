@@ -24,7 +24,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # Install requirements for devstack (easier to commit)
 #
 # update, then install some utils
-RUN apt-get update && apt-get install -y git socat curl sudo apt-transport-https vim wget net-tools python
+RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python
 # Extra requirements for pip-requirements
 # (thanks to http://terriyu.info/blog/posts/2013/07/installing-devstack-ceilometer/, also)
 RUN apt-get install -qqy libffi-dev libkrb5-dev \
@@ -70,6 +70,9 @@ RUN pip install six
 
 # Install all pip requirements
 RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
+# Remove marconi and zaqar client
+RUN sed '/marconiclient/d' global-requirements.txt
+RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
 # thanks to https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/localrc
 ##############################################################
@@ -82,7 +85,8 @@ ADD local.conf devstack/
 # devstack user will be 'stack'
 ENV STACK_USER stack
 # devstack user home will be /devstack/
-ENV DEST devstack
+ENV DEST /devstack
+ENV HOME /devstack
 # create stack user using the script given by devstack
 RUN ./devstack/tools/create-stack-user.sh
 # change ownership of folders
@@ -92,4 +96,4 @@ USER $STACK_USER
 WORKDIR devstack
 
 # Let's go
-#RUN ./stack.sh
+#RUN /bin/sh -c "sudo service rabbitmq-server start && sudo service mysql start && ./stack.sh"
