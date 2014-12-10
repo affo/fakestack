@@ -70,10 +70,13 @@ RUN pip install six
 
 # Install all pip requirements
 RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
-# Remove marconi and zaqar client
+# Remove marconi and zaqar client due to confilct in str opts.
 RUN sed '/marconiclient/d' global-requirements.txt
 RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
+# be really sure that marconi and zaqar aren't installed
+RUN pip uninstall -y python-marconiclient
+RUN pip uninstall -y python-zaqarclient
 # thanks to https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/localrc
 ##############################################################
 
