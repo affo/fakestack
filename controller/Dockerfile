@@ -19,6 +19,9 @@ RUN /usr/sbin/enable_insecure_key
 # https://github.com/phusion/baseimage-docker/issues/58
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
+# create dir for temporary files
+RUN sudo mkdir /stack_temp
+
 ################################################
 # From https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/Dockerfile:
 # Install requirements for devstack (easier to commit)
@@ -69,11 +72,11 @@ RUN apt-get install -q -y python-pip
 RUN pip install six
 
 # Install all pip requirements
-RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
+RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt -O /stack_temp/global-requirements.txt
 # Remove marconi and zaqar client due to confilct in str opts.
-RUN sed '/marconiclient/d' global-requirements.txt
-RUN sed '/zaqarclient/d' global-requirements.txt
-RUN pip install -r global-requirements.txt
+RUN sed '/marconiclient/d' /stack_temp/global-requirements.txt
+RUN sed '/zaqarclient/d' /stack_temp/global-requirements.txt
+RUN pip install -r /stack_temp/global-requirements.txt
 # be really sure that marconi and zaqar aren't installed
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
@@ -81,7 +84,7 @@ RUN pip uninstall -y python-zaqarclient
 ##############################################################
 
 # add localrc to devstack's root dir
-ADD local.conf devstack/
+ADD local.conf /devstack/
 
 ######################################
 # Brace yourself, ./stack.sh is coming:
@@ -93,10 +96,18 @@ ENV HOME /devstack
 # create stack user using the script given by devstack
 RUN ./devstack/tools/create-stack-user.sh
 # change ownership of folders
-RUN chown -R $STACK_USER:$STACK_USER devstack
+RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
+RUN sudo chown -R $STACK_USER:$STACK_USER /stack_temp
 # log as STACK_USER and cd to devstack/
 USER $STACK_USER
 WORKDIR devstack
 
-# Let's go
-#RUN /bin/sh -c "sudo service rabbitmq-server start && sudo service mysql start && ./stack.sh"
+# copy all daemons scripts
+RUN sudo mkdir /daemons
+ADD lib /daemons
+ADD shared/copy_script /stack_temp
+RUN /bin/sh -c "/stack_temp/copy_script"
+
+# edit /etc/hosts
+RUN sudo echo "127.0.0.1 localhost" > /etc/hosts
+RUN sudo echo "42.42.255.254 controller" >> /etc/hosts

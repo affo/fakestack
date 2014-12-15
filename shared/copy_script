@@ -1,0 +1,8 @@
+for DAEMON in /daemons/*; do
+	# http://phusion.github.io/baseimage-docker/
+	# Adding additional daemons
+	DAEMON_NAME=$(basename $DAEMON)
+	mkdir /etc/service/$DAEMON_NAME
+	cp $DAEMON /etc/service/$DAEMON_NAME/run
+	echo "$DAEMON_NAME copied into /etc/service/$DAEMON_NAME/run"
+done
