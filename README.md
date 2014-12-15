@@ -3,32 +3,29 @@
 
 This repo contains settings for our DevStack playground.
 
-First of all you need [Docker](https://www.docker.com/) to start LXCs. 
+First of all you need [Docker](https://www.docker.com/) to start containers. 
 To have a full OpenStack environment, you have to pull the two nodes.  
-You can run as many compute nodes as you need! 
+You can run as many compute nodes as you need!
 
-### To build
-Thanks to https://github.com/docker/docker/issues/6094
-
-```
-	$ cd controller # or compute
-	$	tar -czh . | docker build - # tar follows `shared` symlink
-``` 
-
-### To fetch
+### Pull
 
 ```
-	$ sudo docker pull affear/os_controller
-	$ sudo docker pull affear/os_compute
-	$ sudo docker run affear/os_controller
-	$ sudo docker run affear/os_compute
-	$ sudo docker run affear/os_compute
-	$ sudo docker run affear/os_compute
-	$ sudo docker run affear/os_compute
-	...
+	$ docker pull affear/os_controller:latest
+	$ docker pull affear/os_compute:latest
 ```
 
-And here it is, your OpenStack testing environment!
+### Install
+In this project dir:
+
+```
+	$ ./scripts/run_stack.sh affear/os_controller:latest
+	$ ./scripts/run_stack.sh affear/os_compute:latest
+```
+
+This command will install OpenStack on the given image (some time is required).
+
+### Configure IPs
+Our configuration works with fixed IPs, so:
 
 Install pipework:
 
@@ -39,11 +36,31 @@ Install pipework:
 	$ rm -rf pipework_dir/
 ```
 
-If needed, create your own bridge (in our case `osbr`) as described in [Docker doc](https://docs.docker.com/articles/networking/#building-your-own-bridge)
+Create your own bridge as described in [Docker doc](https://docs.docker.com/articles/networking/#building-your-own-bridge).
 
-Use pipework:
+Pay attention to add the correct CIDR to the bridge:
 
 ```
-	$ HANDLER=$(docker run -d affear/os_controller:test)
-	$ ./pipework osbr $HANDLER 42.42.255.254/16
+	$ sudo ip addr add 42.42.0.1/16 dev <BRIDGE_NAME>
 ```
+
+### Run
+Use pipework for the controller:
+
+```
+	$ HANDLER=$(docker run -d affear/os_controller:latest)
+	$ ./pipework <BRIDGE_NAME> $HANDLER 42.42.255.254/16
+```
+
+No need to use pipework for compute nodes:
+
+```
+	$ docker run -d affear/os_compute:latest
+	$ docker run -d affear/os_compute:latest
+	$ docker run -d affear/os_compute:latest
+	$ docker run -d affear/os_compute:latest
+	$ docker run -d affear/os_compute:latest
+	... # as many as you want(can)
+```
+
+And here it is, your OpenStack testing environment!
