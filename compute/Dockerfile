@@ -59,6 +59,7 @@ RUN wget https://raw.github.com/openstack/requirements/master/global-requirement
 RUN sed '/marconiclient/d' global-requirements.txt
 RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
+RUN rm global-requirements.txt
 # be really sure that marconi and zaqar aren't installed
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
@@ -79,16 +80,15 @@ ENV HOME /devstack
 RUN ./devstack/tools/create-stack-user.sh
 # change ownership of folders
 RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
-RUN sudo chown -R $STACK_USER:$STACK_USER /stack_temp
 # log as STACK_USER and cd to devstack/
 USER $STACK_USER
 WORKDIR devstack
 
-# copy all daemons scripts
-RUN sudo mkdir /daemons
-ADD lib /daemons
-ADD shared/copy_script /stack_temp
-RUN /bin/sh -c "/stack_temp/copy_script"
+# rejoin stack on run
+RUN sudo mkdir /etc/service/stack
+RUN sudo ln -s /devstack/rejoin-stack.sh /etc/service/stack/run
+# enable screen
+RUN sudo chmod a+rw /dev/console/
 
 # edit /etc/hosts
 RUN sudo echo "127.0.0.1 localhost" > /etc/hosts

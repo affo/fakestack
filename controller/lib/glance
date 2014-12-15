@@ -1,3 +1,0 @@
-#!/bin/sh
-source /devstack/lib/glance
-start_glance
