@@ -5,7 +5,17 @@ This repo contains settings for our DevStack playground.
 
 First of all you need [Docker](https://www.docker.com/) to start LXCs. 
 To have a full OpenStack environment, you have to pull the two nodes.  
-You can run as many compute nodes as you need!  
+You can run as many compute nodes as you need! 
+
+### To build
+Thanks to https://github.com/docker/docker/issues/6094
+
+```
+	$ cd controller # or compute
+	$	tar -czh . | docker build - # tar follows `shared` symlink
+``` 
+
+### To fetch
 
 ```
 	$ sudo docker pull affear/os_controller
