@@ -59,7 +59,7 @@ RUN wget https://raw.github.com/openstack/requirements/master/global-requirement
 RUN sed '/marconiclient/d' global-requirements.txt
 RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
-RUN rm global-requirements.txt
+RUN rm /global-requirements.txt
 # be really sure that marconi and zaqar aren't installed
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
