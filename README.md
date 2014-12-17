@@ -55,11 +55,11 @@ Use pipework for the controller:
 No need to use pipework for compute nodes:
 
 ```
-	$ docker run -d affear/os_compute:latest
-	$ docker run -d affear/os_compute:latest
-	$ docker run -d affear/os_compute:latest
-	$ docker run -d affear/os_compute:latest
-	$ docker run -d affear/os_compute:latest
+	$ docker run --privileged=true -d affear/os_compute:latest
+	$ docker run --privileged=true -d affear/os_compute:latest
+	$ docker run --privileged=true -d affear/os_compute:latest
+	$ docker run --privileged=true -d affear/os_compute:latest
+	$ docker run --privileged=true -d affear/os_compute:latest
 	... # as many as you want(can)
 ```
 

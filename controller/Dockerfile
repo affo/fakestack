@@ -100,9 +100,14 @@ RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
 USER $STACK_USER
 WORKDIR devstack
 
-# rejoin stack on run
+# stack on run
 RUN sudo mkdir /etc/service/stack
-RUN sudo ln -s /devstack/rejoin-stack.sh /etc/service/stack/run
+RUN sudo ln -s /devstack/stack.sh /etc/service/stack/run
+# start mysql and rabbit on run
+RUN sudo mkdir /etc/service/mysql
+RUN sudo ln -s /etc/init.d/mysql /etc/service/mysql/run
+RUN sudo mkdir /etc/service/rabbit
+RUN sudo ln -s /etc/init.d/rabbitmq-server /etc/service/rabbit/run
 # enable screen
 RUN sudo chmod a+rw /dev/console/
 
