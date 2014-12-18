@@ -9,22 +9,11 @@ To have a full OpenStack environment, you have to pull the two nodes.
 ### Pull
 
 ```
-	$ docker pull affear/os_controller:latest
-	$ docker pull affear/os_compute:latest
+	$ docker pull affear/controller:latest
+	$ docker pull affear/compute:latest
 ```
 
 ### Configure IPs
-Our configuration works with fixed IPs, so:
-
-Install pipework:
-
-```
-	$ git clone git@github.com:jpetazzo/pipework.git
-	$ mv pipework/ pipework_dir
-	$ mv pipework_dir/pipework scripts
-	$ rm -rf pipework_dir/
-```
-
 Create your own bridge as described in [Docker doc](https://docs.docker.com/articles/networking/#building-your-own-bridge).
 
 Or use the script provided:
@@ -46,20 +35,19 @@ And then:
 ```
 
 ### Run
-Use pipework for the controller:
+Controller:
 
 ```
-	$ HANDLER=$(docker run -d affear/os_controller:latest)
-	$ ./scripts/pipework <BRIDGE_NAME> $HANDLER 42.42.255.254/16
+	$ docker run --privileged=true -t -i -h controller affear/controller:latest
 ```
 
-No need to use pipework for compute nodes:
+Compute nodes:
 
 ```
-	$ docker run -privileged -t -i affear/os_compute:latest
-	$ docker run -privileged -t -i affear/os_compute:latest
-	$ docker run -privileged -t -i affear/os_compute:latest
-	$ docker run -privileged -t -i affear/os_compute:latest
+	$ docker run -privileged -t -i affear/compute:latest
+	$ docker run -privileged -t -i affear/compute:latest
+	$ docker run -privileged -t -i affear/compute:latest
+	$ docker run -privileged -t -i affear/compute:latest
 	... # as many as you want(can)
 ```
 
