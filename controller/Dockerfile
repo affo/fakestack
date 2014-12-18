@@ -1,4 +1,4 @@
-FROM phusion/baseimage:latest
+FROM ubuntu:latest
 MAINTAINER affearteam
 
 # expose ports for OpenStack services (default ports from guide):
@@ -13,16 +13,13 @@ MAINTAINER affearteam
 # 80 -> Apache2
 EXPOSE 5000 35357 9292 9191 8777 8773 8774 8775 8000 8003 8004 3306 5672 80
 
-# Enable insecure key for ssh
-RUN /usr/sbin/enable_insecure_key
-
 # solve errors on non interactive mode
 # https://github.com/phusion/baseimage-docker/issues/58
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 ################################################
 # From https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/Dockerfile:
-# Install requirements for devstack (easier to commit)
+# Install requirements for devstack
 #
 # update, then install some utils
 RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python
@@ -49,8 +46,8 @@ RUN umask 022; \
 
 WORKDIR /
 
-# Install devstack scripts
-RUN git clone https://github.com/openstack-dev/devstack /devstack
+# Install devstack scripts from our fork
+RUN git clone https://github.com/affear/devstack.git /devstack
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
@@ -84,6 +81,14 @@ RUN pip uninstall -y python-zaqarclient
 
 # add localrc to devstack's root dir
 ADD local.conf /devstack/
+# add script to reinstall a service (via ssh, hopefully).
+# Something like:
+#		docker-ssh <image-id> -c "/devstack/reinstall_service.sh nova"
+ADD shared/reinstall_service.sh /devstack/
+# add command
+ADD shared/cmd.sh / 
+# edit /etc/hosts
+RUN echo "42.42.255.254 controller" >> /etc/hosts
 
 ######################################
 # Brace yourself, ./stack.sh is coming:
@@ -93,24 +98,13 @@ ENV STACK_USER stack
 ENV DEST /devstack
 ENV HOME /devstack
 # create stack user using the script given by devstack
-RUN ./devstack/tools/create-stack-user.sh
+RUN /devstack/tools/create-stack-user.sh
+# filename and content MUST match $STACK_USER
+ADD shared/stack.sudo /etc/sudoers.d/stack
 # change ownership of folders
 RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
 # log as STACK_USER and cd to devstack/
 USER $STACK_USER
 WORKDIR devstack
 
-# stack on run
-RUN sudo mkdir /etc/service/stack
-RUN sudo ln -s /devstack/stack.sh /etc/service/stack/run
-# start mysql and rabbit on run
-RUN sudo mkdir /etc/service/mysql
-RUN sudo ln -s /etc/init.d/mysql /etc/service/mysql/run
-RUN sudo mkdir /etc/service/rabbit
-RUN sudo ln -s /etc/init.d/rabbitmq-server /etc/service/rabbit/run
-# enable screen
-RUN sudo chmod a+rw /dev/console/
-
-# edit /etc/hosts
-RUN sudo echo "127.0.0.1 localhost" > /etc/hosts
-RUN sudo echo "42.42.255.254 controller" >> /etc/hosts
+CMD ["/cmd.sh"]
