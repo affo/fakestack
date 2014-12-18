@@ -107,4 +107,4 @@ RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
 USER $STACK_USER
 WORKDIR devstack
 
-CMD ["/cmd.sh"]
+CMD ["sudo /cmd.sh"]
