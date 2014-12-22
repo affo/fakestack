@@ -1,6 +1,13 @@
 #!/bin/bash
 CIDR=42.42.0.1/16
 
+if [ -z $(command -v brctl) ]; then
+	echo "brctl is needed to run this script."
+	echo "Please install:"
+	echo "sudo apt-get install bridge-utils"
+	exit 1
+fi
+
 if [ $# -eq 0 ]; then
 	echo "./create_br.sh <bridge_name>"
 	echo "This script will create a bridge named as <bridge_name>"
@@ -23,6 +30,7 @@ if [ ! -z "$check" ]; then
 	# this means docker0 exists
 	sudo ip link set dev docker0 down
 	sudo brctl delbr docker0
+	echo "bridge docker0 deleted."
 fi
 
 sudo brctl addbr $1
