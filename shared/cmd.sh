@@ -40,3 +40,5 @@ fi
 start_service mysql
 start_service rabbitmq-server
 su stack -c '/devstack/stack.sh'
+# run shell to stay on
+/bin/bash
