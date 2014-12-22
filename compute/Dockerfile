@@ -72,8 +72,6 @@ ADD local.conf /devstack/
 ADD shared/reinstall_service.sh /devstack/
 # add command
 ADD shared/cmd.sh / 
-# edit /etc/hosts
-RUN echo "42.42.255.254 controller" >> /etc/hosts
 
 ######################################
 # Brace yourself, ./stack.sh is coming:
