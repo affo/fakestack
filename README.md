@@ -80,6 +80,8 @@ To attach to a container, run:
 	$ docker attach <CONTAINER_ID>
 ```
 
+Remember to exit the shell via `CTRL-q`. If not you will kill the process!
+
 To run a command:
 
 ```
