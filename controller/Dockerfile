@@ -18,7 +18,7 @@ EXPOSE 5000 35357 9292 9191 8777 8773 8774 8775 8000 8003 8004 3306 5672 80
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 ################################################
-# From https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/Dockerfile:
+# Thanks to https://github.com/ewindisch/dockenstack
 # Install requirements for devstack
 #
 # update, then install some utils
@@ -76,7 +76,7 @@ RUN rm /global-requirements.txt
 # be really sure that marconi and zaqar aren't installed
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
-# thanks to https://github.com/ewindisch/dockenstack/blob/openstack-ci/dockenstack/localrc
+# Thanks to https://github.com/ewindisch/dockenstack
 ##############################################################
 
 # add localrc to devstack's root dir
