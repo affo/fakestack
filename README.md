@@ -59,20 +59,32 @@ If you have to run your image, choose the best configuration being aware of this
 Controller:
 
 ```
-	$ docker run --privileged=true -t -i -h controller affear/controller:latest
+	$ docker run --privileged=true -tid -h controller affear/controller:latest
 ```
 
 Compute nodes:
 
 ```
-	$ docker run --privileged=true -t -i affear/compute:latest
-	$ docker run --privileged=true -t -i affear/compute:latest
-	$ docker run --privileged=true -t -i affear/compute:latest
-	$ docker run --privileged=true -t -i affear/compute:latest
+	$ docker run --privileged=true -tid affear/compute:latest
+	$ docker run --privileged=true -tid affear/compute:latest
+	$ docker run --privileged=true -tid affear/compute:latest
+	$ docker run --privileged=true -tid affear/compute:latest
 	... # as many as you want(can)
 ```
 
 And here it is, your OpenStack testing environment!
+
+To attach to a container, run:
+
+```
+	$ docker attach <CONTAINER_ID>
+```
+
+To run a command:
+
+```
+	$ docker exec <CONTAINER_ID> <COMMAND>
+```
 
 ### Build
 (the example is for controller, but it is the same for compute)
