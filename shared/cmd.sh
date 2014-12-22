@@ -12,9 +12,6 @@ function start_service {
 # editing /etc/hosts for rabbit and openstack
 sudo sh -c "echo '127.0.0.1 localhost' > /etc/hosts"
 sudo sh -c "echo '42.42.255.254 controller' >> /etc/hosts"
-echo "--> /etc/hosts edited!"
-echo "--> cat /etc/hosts:"
-cat /etc/hosts
 
 CTRL_IP=42.42.255.254/16
 GW_IP=42.42.0.1
@@ -25,7 +22,14 @@ if [ $(hostname) = "controller" ]; then
 	echo "controller: eth0 IP set to $CTRL_IP"
 	sudo route add default gw $GW_IP eth0
 	echo "default gateway set to $GW_IP"
+else
+	my_ip=$(ifconfig  | grep 'inet addr:'| grep '42.42.*' | cut -d: -f2 | awk '{ print $1}')
+	sudo sh -c "echo '$my_ip $(hostname)' >> /etc/hosts"
 fi
+
+echo "--> /etc/hosts edited!"
+echo "--> cat /etc/hosts:"
+cat /etc/hosts
 
 # test connection with Google's DNS
 echo "checking connection..."
