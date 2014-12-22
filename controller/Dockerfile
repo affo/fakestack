@@ -93,8 +93,8 @@ ADD shared/cmd.sh /
 # devstack user will be 'stack'
 ENV STACK_USER stack
 # devstack user home will be /devstack/
-ENV DEST /devstack
-ENV HOME /devstack
+ENV DEST /devstack/
+ENV HOME /devstack/
 # create stack user using the script given by devstack
 RUN /devstack/tools/create-stack-user.sh
 # filename and content MUST match $STACK_USER
@@ -103,6 +103,6 @@ ADD shared/stack.sudo /etc/sudoers.d/stack
 RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
 # log as STACK_USER and cd to devstack/
 USER $STACK_USER
-WORKDIR devstack
+WORKDIR /devstack/
 
 CMD sudo /cmd.sh
