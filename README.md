@@ -59,7 +59,7 @@ If you have to run your image, choose the best configuration being aware of this
 Controller:
 
 ```
-	$ docker run --privileged=true -tid -h controller affear/controller:latest
+	$ docker run -p 127.0.0.1:4444:80 --privileged=true -tid -h controller affear/controller:latest
 ```
 
 Compute nodes:
