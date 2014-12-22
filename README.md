@@ -25,7 +25,7 @@ Or use the script provided:
 Edit `/etc/default/docker` to have:
 
 ```
-	DOCKER_OPTS="-s devicemapper -b <BRIDGE_NAME>"
+	DOCKER_OPTS="-b <BRIDGE_NAME>"
 ```
 
 And then:
@@ -33,6 +33,27 @@ And then:
 ```
 	$ sudo service docker restart
 ```
+
+#### WARNING
+It should be necessary to add:
+
+```
+	DOCKER_OPTS="-s devicemapper -b <BRIDGE_NAME>"
+```
+
+Because of problems with `mysql` service startup (see [this issue](https://github.com/docker/docker/issues/5430)).
+
+We tried both (with or without `devicemapper`) on different servers:   
+In one case (running __without__ `devicemapper`) we got `mysql` error on run, but no error on build.  
+In the other case (running __with__ `devicemapper`) we got the `devicemapper` error:
+
+```
+	Error getting container ... # blablabla
+```
+
+on build, but no problem on run.
+
+If you have to run your image, choose the best configuration being aware of this.
 
 ### Run
 Controller:
