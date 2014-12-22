@@ -17,11 +17,22 @@ echo "--> cat /etc/hosts:"
 cat /etc/hosts
 
 CTRL_IP=42.42.255.254/16
+GW_IP=42.42.0.1
 if [ $(hostname) = "controller" ]; then
 	# we are in the controller:
 	# change ip
 	sudo ifconfig eth0 $CTRL_IP
 	echo "controller: eth0 IP set to $CTRL_IP"
+	sudo route add default gw $GW_IP eth0
+	echo "default gateway set to $GW_IP"
+fi
+
+# test connection with google DNS
+echo "checking connection..."
+check_connection=$(ping -c 3 8.8.8.8)
+if [ -z "$check_connection" ]; then
+	echo "something went wrong in configuring connection..."
+	exit 1
 fi
 
 start_service mysql
