@@ -44,10 +44,10 @@ Controller:
 Compute nodes:
 
 ```
-	$ docker run -privileged -t -i affear/compute:latest
-	$ docker run -privileged -t -i affear/compute:latest
-	$ docker run -privileged -t -i affear/compute:latest
-	$ docker run -privileged -t -i affear/compute:latest
+	$ docker run --privileged=true -t -i affear/compute:latest
+	$ docker run --privileged=true -t -i affear/compute:latest
+	$ docker run --privileged=true -t -i affear/compute:latest
+	$ docker run --privileged=true -t -i affear/compute:latest
 	... # as many as you want(can)
 ```
 
