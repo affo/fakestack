@@ -27,12 +27,14 @@ if [ $(hostname) = "controller" ]; then
 	echo "default gateway set to $GW_IP"
 fi
 
-# test connection with google DNS
+# test connection with Google's DNS
 echo "checking connection..."
 check_connection=$(ping -c 3 8.8.8.8)
 if [ -z "$check_connection" ]; then
 	echo "something went wrong in configuring connection..."
 	exit 1
+else
+	echo "connection OK."
 fi
 
 start_service mysql
