@@ -44,6 +44,7 @@ fi
 # update devstack
 git -C /devstack fetch official
 git -C /devstack rebase official/master
+git -C /devstack pull origin master
 
 start_service mysql
 start_service rabbitmq-server
