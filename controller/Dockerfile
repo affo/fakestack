@@ -103,6 +103,6 @@ ADD shared/stack.sudo /etc/sudoers.d/stack
 RUN sudo chown -R $STACK_USER:$STACK_USER /devstack
 # log as STACK_USER and cd to devstack/
 USER $STACK_USER
-WORKDIR devstack
+WORKDIR /devstack
 
 CMD sudo /cmd.sh
