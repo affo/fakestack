@@ -48,6 +48,8 @@ WORKDIR /
 
 # Install devstack scripts from our fork
 RUN git clone https://github.com/affear/devstack.git /devstack
+# add devstack's official upstream
+RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
