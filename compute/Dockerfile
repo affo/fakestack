@@ -29,9 +29,6 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
 
-# Install RabbitMQ
-RUN apt-get -qqy install rabbitmq-server
-
 WORKDIR /
 
 # Install devstack scripts from our fork
