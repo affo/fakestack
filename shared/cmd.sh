@@ -49,4 +49,4 @@ start_service mysql
 start_service rabbitmq-server
 su stack -c '/devstack/stack.sh'
 # run shell to stay on
-su stack -c '/bin/bash'
+sudo su stack
