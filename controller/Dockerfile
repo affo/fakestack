@@ -37,15 +37,6 @@ RUN echo 'mysql-server mysql-server/root_password password pwstack' | debconf-se
 # Install RabbitMQ
 RUN apt-get -qqy install rabbitmq-server
 
-# get images for glance
-RUN mkdir -m 755 -p /opt/cirros_image
-WORKDIR /opt/cirros_image
-RUN umask 022; \
-		wget --progress=dot:mega \
-				 http://35d32e50e9d5a9dddd5f-7400ae4d3b198289837a7cdf652ffd5a.r94.cf1.rackcdn.com/cirros.img
-
-WORKDIR /
-
 # Install devstack scripts from our fork
 RUN git clone https://github.com/affear/devstack.git /devstack
 # add devstack's official upstream
