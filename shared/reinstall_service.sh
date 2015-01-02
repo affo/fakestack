@@ -14,9 +14,15 @@ fi
 
 # clean everything
 /devstack/clean.sh
+echo "---> DevStack cleaned!"
 # remove $1 folder
 rm -rf /opt/stack/$1
+echo "--> $1 folder removed!"
+# ensure that mysql and rabbit are up
+# on compute nodes these commands will fail
+sudo service mysql start
+sudo service rabbitmq-server start
 # reinstall (only nova)
 /devstack/stack.sh
 
-echo "$1 reinstalled succesfully!"
+echo "---> $1 reinstalled succesfully!"
