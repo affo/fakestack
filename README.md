@@ -80,6 +80,8 @@ Compute nodes:
 
 And here it is, your OpenStack testing environment!
 
+__NOTE__: Be aware that the run install openstack in the container, so it will take sometime to have the container up and running. So, avoid `-d` option if you want to see what it is happening.
+
 To attach to a container, run:
 
 ```
