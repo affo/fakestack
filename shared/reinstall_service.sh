@@ -19,7 +19,7 @@ echo "---> DevStack cleaned!"
 rm -rf /opt/stack/$1
 echo "--> $1 folder removed!"
 # ensure that mysql and rabbit are up
-# on compute nodes these commands will fail
+# (on compute nodes these commands will fail).
 sudo service mysql start
 sudo service rabbitmq-server start
 # reinstall (only nova)
