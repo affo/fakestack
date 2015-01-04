@@ -1,8 +1,12 @@
 # DevStack Playground
 ### This project is in __PRE-ALPHA__ state.
 
-This repo contains settings for our DevStack playground.
+The aim of this project is to create an OpenStack testing environment.  
+We used Docker containers instead of virtual machines to obtain more lightweight and reusable components.  
+Our aim, in fact, is to have an environment with hundreds of compute nodes.  
+We used `nova.virt.fake` because, for our purpose, we are not interested in spawning real virtual machines
 
+### Getting started
 First of all you need [Docker](https://www.docker.com/) to start containers. 
 To have a full OpenStack environment, you have to run at least two nodes.  
 
@@ -73,7 +77,7 @@ To attach to a container, run:
 	$ docker attach <CONTAINER_ID>
 ```
 
-Remember to exit the shell via `CTRL-q`. If not you will kill the process!
+Remember to exit the shell via `CTRL-pq`. If not you will kill the process!
 
 To run a command:
 
