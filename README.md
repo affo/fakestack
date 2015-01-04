@@ -1,5 +1,5 @@
-# DevStack Playground
-### This project is in __PRE-ALPHA__ state.
+# FakeStack
+### This project is in __ALPHA__ state.
 
 The aim of this project is to create an OpenStack testing environment.  
 We used Docker containers instead of virtual machines to obtain more lightweight and reusable components.  

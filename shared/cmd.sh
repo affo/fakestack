@@ -49,7 +49,7 @@ su stack -c 'git -C /devstack pull origin master'
 start_service mysql
 start_service rabbitmq-server
 su stack -c '/devstack/stack.sh'
-# change escape sequencwe
+# change escape sequence
 stty intr \^k
 echo "To KILL the process press CTRL-K"
 # run shell to stay on

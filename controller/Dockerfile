@@ -61,7 +61,7 @@ RUN pip install six
 
 # Install all pip requirements
 RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
-# Remove marconi and zaqar client due to confilct in str opts.
+# Remove marconi and zaqar client due to conflict in str opts.
 RUN sed '/marconiclient/d' global-requirements.txt
 RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
@@ -74,9 +74,7 @@ RUN pip uninstall -y python-zaqarclient
 
 # add localrc to devstack's root dir
 ADD local.conf /devstack/
-# add script to reinstall a service (via ssh, hopefully).
-# Something like:
-#		docker-ssh <image-id> -c "/devstack/reinstall_service.sh nova"
+# add script to reinstall a service.
 ADD shared/reinstall_service.sh /devstack/
 # add command
 ADD shared/cmd.sh / 
