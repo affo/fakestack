@@ -12,17 +12,20 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
+# prevent apt-get to give problems...
+# badass way...
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock
+
 # clean everything
 /devstack/clean.sh
-echo "---> DevStack cleaned!"
+echo "   ---> DevStack cleaned!"
 # remove $1 folder
 rm -rf /opt/stack/$1
-echo "--> $1 folder removed!"
+echo "   --> $1 folder removed!"
 # ensure that mysql and rabbit are up
 # (on compute nodes these commands will fail).
 sudo service mysql start
 sudo service rabbitmq-server start
-# reinstall (only nova)
+# reinstall (only $1)
 /devstack/stack.sh
-
-echo "---> $1 reinstalled succesfully!"
