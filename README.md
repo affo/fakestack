@@ -62,12 +62,6 @@ Controller:
 	$ docker run --privileged=true -tid -h controller affear/controller:latest
 ```
 
-To publish and access horizon from the outside world (this doesn't work up to now...):
-
-```
-	$ sudo iptables -t nat -A DOCKER -p tcp --dport 80 -j DNAT --to 42.42.255.254:80
-```
-
 Compute nodes:
 
 ```
