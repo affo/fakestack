@@ -28,6 +28,8 @@ RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-h
 RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
+# Extra
+RUN apt-get install -qqy uuid-runtime openvswitch-common
 
 WORKDIR /
 
