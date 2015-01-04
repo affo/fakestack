@@ -22,14 +22,12 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 # Install requirements for devstack
 #
 # update, then install some utils
-RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python
+RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python uuid-runtime
 # Extra requirements for pip-requirements
 # (thanks to http://terriyu.info/blog/posts/2013/07/installing-devstack-ceilometer/, also)
 RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
-# Extra
-RUN apt-get install -qqy uuid-runtime openvswitch-common
 
 # Configure and install MySQL
 RUN echo 'mysql-server mysql-server/root_password password pwstack' | debconf-set-selections; \
