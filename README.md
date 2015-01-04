@@ -1,17 +1,10 @@
 # DevStack Playground
-### This project is in __PRE-ALPHA__ state! Do not use it by now!
+### This project is in __PRE-ALPHA__ state.
 
 This repo contains settings for our DevStack playground.
 
 First of all you need [Docker](https://www.docker.com/) to start containers. 
-To have a full OpenStack environment, you have to pull the two nodes.  
-
-### Pull
-
-```
-	$ docker pull affear/controller:latest
-	$ docker pull affear/compute:latest
-```
+To have a full OpenStack environment, you have to run at least two nodes.  
 
 ### Configure IPs
 Create your own bridge as described in [Docker doc](https://docs.docker.com/articles/networking/#building-your-own-bridge).
@@ -74,8 +67,6 @@ Compute nodes:
 
 And here it is, your OpenStack testing environment!
 
-__NOTE__: Be aware that the run install openstack in the container, so it will take sometime to have the container up and running. So, avoid `-d` option if you want to see what it is happening.
-
 To attach to a container, run:
 
 ```
@@ -90,8 +81,14 @@ To run a command:
 	$ docker exec <CONTAINER_ID> <COMMAND>
 ```
 
+__NOTES__
+
+* Be aware that the `CMD` in the `Dockerfile` will install OpenStack in the container, so it will take a lot of time to have the container up once you run it. So, avoid `-d` option if you want to see what it is happening.
+
+* Compute containers can run in parallel, but it is important that you wait for the controller to finish OpenStack installation before running compute nodes.
+
 ### Build
-(the example is for controller, but it is the same for compute)
+(the example is for controller, but it is the same for compute).
 
 ```
 	$ git clone https://github.com/affear/fakestack.git
