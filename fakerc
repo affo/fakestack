@@ -72,3 +72,6 @@ function ftools_reinstall_nova {
 
 	return is_docker_up && docker exec $1 ./reinstall_service.sh nova
 }
+
+# everything is ok
+return 0
