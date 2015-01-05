@@ -1,6 +1,13 @@
 #!/bin/bash
 
-if [ ! $(source fakerc) ]; then
+if [ ! $(basename `pwd`) = "fakestack" ]; then
+	echo "execute this script from project's topdir, please..."
+	exit 1
+fi
+
+source fakerc
+if [[ ! $? ]]; then
+	echo "exiting"
 	exit 1
 fi
 
