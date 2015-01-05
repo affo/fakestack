@@ -7,9 +7,23 @@ if [ ! $(basename `pwd`) = "fakestack" ]; then
 	return
 fi
 
+# function to check if docker is running
+function is_docker_up {
+	local DOC_P
+	DOC_P=$(ps -A | grep docker)
+	if [ -z "$DOC_P" ]; then
+		echo "WARNING: docker is not running..."
+		echo "start it with:"
+		echo "sudo service docker start"
+		return 1
+	fi
+
+	return 0
+}
+
 # setting some aliases
-alias ftools_runctrl="docker run --privileged=true -ti -h controller --name=ctrl affear/ctrl:ok"
-alias ftools_runcmp="docker run --privileged=true -ti affear/cmp:ok"
+alias ftools_runctrl="is_docker_up && docker run --privileged=true -ti -h controller --name=ctrl affear/ctrl:ok"
+alias ftools_runcmp="is_docker_up && docker run --privileged=true -ti affear/cmp:ok"
 # exporting scripts
 export PATH=./scripts:$PATH
 
@@ -38,7 +52,7 @@ function ftools_build {
 	fi
 
 	echo "Building affear/$SHORT_NAME:ok..."
-	tar -czh . | docker build -t affear/$SHORT_NAME:ok -
+	is_docker_up && tar -czh . | docker build -t affear/$SHORT_NAME:ok -
 }
 
 function ftools_attach {
@@ -47,7 +61,7 @@ function ftools_attach {
 		return
 	fi
 
-	docker attach $1
+	is_docker_up && docker attach $1
 }
 
 function ftools_reinstall_nova {
@@ -56,5 +70,5 @@ function ftools_reinstall_nova {
 		return
 	fi
 
-	docker exec $1 ./reinstall_service.sh nova
+	is_docker_up && docker exec $1 ./reinstall_service.sh nova
 }
