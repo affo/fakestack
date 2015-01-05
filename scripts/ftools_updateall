@@ -16,15 +16,15 @@ CTRL=$(docker ps | awk '/ctrl/ {print $1}')
 
 STATUS=$(ftools_reinstall_nova $CTRL)
 
-if [ ! $STATUS ]; then
+if [[ ! $STATUS ]]; then
 	echo "CTRL has not reinstalled nova properly... Exiting..."
 	exit 1
 fi
 
 for CMP in $CMPS
 do
-	STATUS=$($STATUS && ftools_reinstall_nova $CMP)
-	if [ $STATUS ]; then
+	STATUS=$($STATUS && `ftools_reinstall_nova $CMP`)
+	if [[ $STATUS ]]; then
 		echo "$CMP updated SUCCESFULLY!"
 	else
 		echo "$CMP update FAILED!"
