@@ -4,8 +4,11 @@ TOPDIR=$(pwd)
 
 if [ ! $(basename `pwd`) = "fakestack" ]; then
 	echo "source this file from its containing folder, please..."
-	return
+	return 1
 fi
+
+# set variable that says that fakerc has been sourced
+export FAKERC_SOURCED=0
 
 # function to check if docker is running
 function is_docker_up {
@@ -34,7 +37,7 @@ function ftools_build {
 
 	if [ $# -eq 0 ]; then
 		echo "Give short name, please."
-		return
+		return 1
 	fi
 
 	if [ $SHORT_NAME = "ctrl" ]; then
@@ -43,32 +46,32 @@ function ftools_build {
 		LONG_NAME="compute"
 	else
 		echo "Name must match 'ctrl' or 'cmp'"
-		return
+		return 1
 	fi
 
 	if [ ! $(pwd) = "$TOPDIR/$LONG_NAME" ]; then
 		echo "You must execute this script in $(basename $TOPDIR)/$LONG_NAME"
-		return
+		return 1
 	fi
 
 	echo "Building affear/$SHORT_NAME:ok..."
-	is_docker_up && tar -czh . | docker build -t affear/$SHORT_NAME:ok -
+	return is_docker_up && tar -czh . | docker build -t affear/$SHORT_NAME:ok -
 }
 
 function ftools_attach {
 	if [ $# -eq 0 ]; then
 		echo "Give container ID or name, please."
-		return
+		return 1
 	fi
 
-	is_docker_up && docker attach $1
+	return is_docker_up && docker attach $1
 }
 
 function ftools_reinstall_nova {
 	if [ $# -eq 0 ]; then
 		echo "Give container ID or name, please."
-		return
+		return 1
 	fi
 
-	is_docker_up && docker exec $1 ./reinstall_service.sh nova
+	return is_docker_up && docker exec $1 ./reinstall_service.sh nova
 }
