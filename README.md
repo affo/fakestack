@@ -100,4 +100,4 @@ __NOTES__
 	$ tar -czh . | docker build -t <TAG> -
 ```
 
-__Final note__: _almost all of the commands listed above are available running_ `source dockerrc` _._
+__Final note__: _almost all of the commands listed above are available running_ `source fakerc` _._
