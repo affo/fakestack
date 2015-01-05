@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ ! $FAKERC_SOURCED ]; then
+	echo "You must source fakerc to execute this script..."
+	return 1
+fi
+
+CMPS=$(docker ps | awk '/cmp/ {print $1}')
+CTRL=$(docker ps | awk '/ctrl/ {print $1}')
+
+STATUS=$(ftools_reinstall_nova $CTRL)
+
+if [ ! $STATUS ]; then
+	echo "CTRL has not reinstalled nova properly... Exiting..."
+	return 1
+fi
+
+for CMP in $CMPS
+do
+	STATUS=$($STATUS && ftools_reinstall_nova $CMP)
+	if [ $STATUS ]; then
+		echo "$CMP updated SUCCESFULLY!"
+	else
+		echo "$CMP update FAILED!"
+	fi
+done	
