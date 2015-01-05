@@ -1,14 +1,60 @@
 #!/bin/bash
-alias doc-build_ctrl="tar -czh . | docker build -t affear/ctrl:ok -"
-alias doc-build_cmp="tar -czh . | docker build -t affear/cmp:ok -"
-alias doc-run_ctrl="docker run --privileged=true -ti -h controller --name=ctrl affear/ctrl:ok"
-alias doc-run_cmp="docker run --privileged=true -ti affear/cmp:ok"
-alias doc-attach_ctrl="docker attach ctrl"
 
-function doc-reinstall_nova {
+TOPDIR=$(pwd)
+
+if [ ! $(basename `pwd`) = "fakestack" ]; then
+	echo "source this file from its containing folder, please..."
+	return
+fi
+
+# setting some aliases
+alias ftools_runctrl="docker run --privileged=true -ti -h controller --name=ctrl affear/ctrl:ok"
+alias ftools_runcmp="docker run --privileged=true -ti affear/cmp:ok"
+# exporting scripts
+export PATH=./scripts:$PATH
+
+# usefull functions
+function ftools_build {
+	local SHORT_NAME=$1
+	local LONG_NAME
+
+	if [ $# -eq 0 ]; then
+		echo "Give short name, please."
+		return
+	fi
+
+	if [ $SHORT_NAME = "ctrl" ]; then
+		LONG_NAME="controller"
+	elif [ $SHORT_NAME = "cmp" ]; then
+		LONG_NAME="compute"
+	else
+		echo "Name must match 'ctrl' or 'cmp'"
+		return
+	fi
+
+	if [ ! $(pwd) = "$TOPDIR/$LONG_NAME" ]; then
+		echo "You must execute this script in $(basename $TOPDIR)/$LONG_NAME"
+		return
+	fi
+
+	echo "Building affear/$SHORT_NAME:ok..."
+	tar -czh . | docker build -t affear/$SHORT_NAME:ok -
+}
+
+function ftools_attach {
 	if [ $# -eq 0 ]; then
 		echo "Give container ID or name, please."
-	else
-		docker exec $1 ./reinstall_service.sh nova
+		return
 	fi
+
+	docker attach $1
+}
+
+function ftools_reinstall_nova {
+	if [ $# -eq 0 ]; then
+		echo "Give container ID or name, please."
+		return
+	fi
+
+	docker exec $1 ./reinstall_service.sh nova
 }
