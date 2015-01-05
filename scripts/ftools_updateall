@@ -11,6 +11,11 @@ if [[ ! $? ]]; then
 	exit 1
 fi
 
+source scripts/common
+# Create a new named screen to run processes in
+SCREEN_NAME="update_all"
+configure_screen
+
 CMPS=$(docker ps | awk '/cmp/ {print $1}')
 CTRL=$(docker ps | awk '/ctrl/ {print $1}')
 
@@ -22,10 +27,10 @@ fi
 
 for CMP in $CMPS
 do
-	ftools_reinstall_nova $CMP
+	screen_process $CMP "ftools_reinstall_nova $CMP"
 	if [[ $? ]]; then
 		echo "$CMP updated SUCCESFULLY!"
 	else
 		echo "$CMP update FAILED!"
 	fi
-done	
+done  

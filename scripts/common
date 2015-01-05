@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Thanks to DevStack
+SCREEN_HARDSTATUS='%{= .} %-Lw%{= .}%> %n%f %t*%{= .}%+Lw%< %-=%{g}(%{d}%H/%l%{g})'
+#TIME=$(date +"%y-%m-%d_%H-%M-%S")
+
+function screen_process {
+	local name=$1
+	local command="$2"
+
+	screen -S $SCREEN_NAME -X screen -t $name
+
+	# sleep to allow bash to be ready to be send the command - we are
+	# creating a new window in screen and then sends characters, so if
+	# bash isn't running by the time we send the command, nothing happens
+	sleep 3
+
+	screen -S $SCREEN_NAME -p $name -X stuff "$command"
+}
+
+function configure_screen {
+	screen -d -m -S $SCREEN_NAME -t shell -s /bin/bash
+	sleep 1
+
+	# Set a reasonable status bar
+	screen -r $SCREEN_NAME -X hardstatus alwayslastline "$SCREEN_HARDSTATUS"
+	screen -r $SCREEN_NAME -X setenv PROMPT_COMMAND /bin/true
+}
