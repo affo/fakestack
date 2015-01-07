@@ -10,8 +10,7 @@ fi
 mkdir logs
 
 echo "Updating controller node..."
-#CTRL=$(docker ps | awk '/ctrl/ {print $1}')
-CTRL="ctrl"
+CTRL=$(docker ps | awk '/ctrl/ {print $1}')
 
 ftools_reinstall_nova $CTRL
 if [[ ! $? ]]; then
@@ -23,8 +22,7 @@ fi
 
 # start compute nodes
 echo "Updating compute nodes..."
-#CMPS=$(docker ps | awk '/cmp/ {print $1}')
-CMPS=("cmp1" "cmp2" "cmp3" "cmp4" "cmp5" "cmp6")
+CMPS=$(docker ps | awk '/cmp/ {print $1}')
 NOW=$(date +"%y-%m-%d_%H-%M-%S")
 
 i=0
