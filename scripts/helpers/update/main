@@ -6,21 +6,47 @@ if [[ ! $? ]]; then
 	exit 1
 fi
 
-CTRL=$(docker ps | awk '/ctrl/ {print $1}')
+# create log directory
+mkdir logs
+
+echo "Updating controller node..."
+#CTRL=$(docker ps | awk '/ctrl/ {print $1}')
+CTRL="ctrl"
 
 ftools_reinstall_nova $CTRL
 if [[ ! $? ]]; then
 	echo "CTRL not updated correctly, exiting..."
 	exit 1
+else
+	echo "CTRL updated correctly!"
 fi
 
-source scripts/helpers/functions
-
 # start compute nodes
-SCREEN_NAME="update_all"
-CMPS=$(docker ps | awk '/cmp/ {print $1}')
+echo "Updating compute nodes..."
+#CMPS=$(docker ps | awk '/cmp/ {print $1}')
+CMPS=("cmp1" "cmp2" "cmp3" "cmp4" "cmp5" "cmp6")
+NOW=$(date +"%y-%m-%d_%H-%M-%S")
 
-for CMP in $CMPS
+i=0
+N_CMP=${#CMPS[*]}
+while [[ $i -lt $N_CMP ]]
 do
-	screen_process $CMP "./scripts/helpers/update/cmp $CMP"
+	echo "--> updating $i"
+	./scripts/helpers/update/cmp ${CMPS[$i]} > logs/${CMPS[$i]}.$NOW.log &
+	i=$(($i+1))
 done
+
+i=0
+while [[ $i -lt $N_CMP ]]
+do
+	wait -n
+	if [[ $? ]]; then
+		echo "--> $i updated succesfully!"
+	else
+		echo "--> $i updated FAILED."
+	fi
+	i=$(($i+1))
+done
+
+echo "ENDED."
+echo "For logs, check logs directory."
