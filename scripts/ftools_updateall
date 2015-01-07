@@ -5,32 +5,10 @@ if [ ! $(basename `pwd`) = "fakestack" ]; then
 	exit 1
 fi
 
-source fakerc
-if [[ ! $? ]]; then
-	echo "exiting"
-	exit 1
-fi
-
-source scripts/common
+source scripts/helpers/functions
 # Create a new named screen to run processes in
 SCREEN_NAME="update_all"
 configure_screen
 
-CMPS=$(docker ps | awk '/cmp/ {print $1}')
-CTRL=$(docker ps | awk '/ctrl/ {print $1}')
-
-ftools_reinstall_nova $CTRL
-if [[ ! $? ]]; then
-	echo "CTRL has not reinstalled nova properly... Exiting..."
-	exit 1
-fi
-
-for CMP in $CMPS
-do
-	screen_process $CMP "ftools_reinstall_nova $CMP"
-	if [[ $? ]]; then
-		echo "$CMP updated SUCCESFULLY!"
-	else
-		echo "$CMP update FAILED!"
-	fi
-done  
+# start all
+screen_process ctrl "scripts/helpers/update/main"

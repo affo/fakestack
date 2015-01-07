@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source fakerc
+if [[ ! $? ]]; then
+	echo "exiting"
+	exit 1
+fi
+
+CTRL=$(docker ps | awk '/ctrl/ {print $1}')
+
+ftools_reinstall_nova $CTRL
+if [[ ! $? ]]; then
+	echo "CTRL not updated correctly, exiting..."
+	exit 1
+fi
+
+source scripts/helpers/functions
+
+# start compute nodes
+SCREEN_NAME="update_all"
+CMPS=$(docker ps | awk '/cmp/ {print $1}')
+
+for CMP in $CMPS
+do
+	screen_process $CMP "./scripts/helpers/update/cmp $CMP"
+done
