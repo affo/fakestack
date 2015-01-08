@@ -23,7 +23,7 @@ fi
 
 # start compute nodes
 echo "Updating compute nodes..."
-CMPS=$(docker ps | awk '/cmp/ {print $1}')
+CMPS=($(docker ps | awk '/cmp/ {print $1}'))
 
 i=0
 N_CMP=${#CMPS[*]}
