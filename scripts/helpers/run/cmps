@@ -27,7 +27,8 @@ fi
 source scripts/helpers/functions
 # Running one sample cmp
 # (screen has already been configured in ftools_runcmps)
-if [[ ! $(is_docker_up) ]]; then
+is_docker_up
+if [[ ! $? ]]; then
 	echo "Docker is down..."
 	lil_pause
 	exit 1
@@ -45,7 +46,8 @@ i=1
 while [[ $i -lt $N_CMP ]]
 do
 	# running cmp as daemon! (-d option)
-	if [[ ! $(is_docker_up) ]]; then
+	is_docker_up
+	if [[ ! $? ]]; then
 		exit 1
 	fi
 
@@ -54,7 +56,7 @@ do
 	if [[ $(($i % $SHOW_STEP)) ]]; then
 		echo $i
 	fi
-	
+
 	i=$(($i+1))
 done
 

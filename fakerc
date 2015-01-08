@@ -50,7 +50,8 @@ function ftools_build {
 		return 1
 	fi
 
-	if [[ ! $(is_docker_up) ]]; then
+	is_docker_up
+	if [[ ! $? ]]; then
 		return 1
 	fi
 
@@ -64,8 +65,9 @@ function ftools_attach {
 		echo "Give container ID or name, please."
 		return 1
 	fi
-
-	if [[ ! $(is_docker_up) ]]; then
+	
+	is_docker_up
+	if [[ ! $? ]]; then
 		return 1
 	fi
 
@@ -78,8 +80,9 @@ function ftools_reinstall_nova {
 		echo "Give container ID or name, please."
 		return 1
 	fi
-
-	if [[ ! $(is_docker_up) ]]; then
+	
+	is_docker_up
+	if [[ ! $? ]]; then
 		return 1
 	fi
 
