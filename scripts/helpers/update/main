@@ -6,8 +6,6 @@ if [[ ! $? ]]; then
 	exit 1
 fi
 
-NOW=$(date +"%y-%m-%d_%H-%M-%S")
-
 # create log directory
 LOG_DIR=logs/update
 mkdir -p $LOG_DIR
@@ -15,7 +13,7 @@ mkdir -p $LOG_DIR
 echo "Updating controller node..."
 CTRL=$(docker ps | awk '/ctrl/ {print $1}')
 
-ftools_reinstall_nova $CTRL | tee $LOG_DIR/ctrl.$NOW.log
+ftools_reinstall_nova $CTRL | tee $LOG_DIR/ctrl.log
 if [[ ! $? ]]; then
 	echo "CTRL not updated correctly, exiting..."
 	exit 1
@@ -32,7 +30,7 @@ N_CMP=${#CMPS[*]}
 while [[ $i -lt $N_CMP ]]
 do
 	echo "--> updating $i"
-	./scripts/helpers/update/cmp ${CMPS[$i]} > $LOG_DIR/${CMPS[$i]}.$NOW.log &
+	./scripts/helpers/update/cmp ${CMPS[$i]} > $LOG_DIR/cmp$i.log &
 	i=$(($i+1))
 done
 
