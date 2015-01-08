@@ -10,7 +10,7 @@ NOW=$(date +"%y-%m-%d_%H-%M-%S")
 
 # create log directory
 LOG_DIR=logs/update
-mkdir $LOG_DIR
+mkdir -p $LOG_DIR
 
 echo "Updating controller node..."
 CTRL=$(docker ps | awk '/ctrl/ {print $1}')
