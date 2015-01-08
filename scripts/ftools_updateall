@@ -17,4 +17,4 @@ else
 fi
 
 # start all
-screen_process ctrl "scripts/helpers/update/main"
+screen_process main "scripts/helpers/update/main"
