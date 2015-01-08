@@ -6,6 +6,12 @@ if [[ ! $? ]]; then
 	exit 1
 fi
 
+is_docker_up
+if [[ ! $? ]]; then
+	echo "Docker is down..."
+	exit 1
+fi
+
 # $1 is a cmp container ID
 ftools_reinstall_nova $1
 if [[ $? ]]; then
