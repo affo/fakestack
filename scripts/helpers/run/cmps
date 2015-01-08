@@ -30,7 +30,7 @@ is_docker_up
 if [[ ! $? ]]; then
 	echo "Docker is down..."
 	lil_pause
-	#exit 1
+	exit 1
 fi
 
 echo "Running $N_CMP as daemons."
