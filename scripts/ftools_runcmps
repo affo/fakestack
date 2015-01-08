@@ -13,7 +13,12 @@ fi
 source scripts/helpers/functions
 # Create a new named screen to run processes in
 SCREEN_NAME="running"
-configure_screen
+if type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.$SCREEN_NAME"; then
+	echo "$SCREEN_NAME already inited."
+	echo "Using it."
+else
+	configure_screen
+fi
 
 # start cmps
 screen_process cmps "scripts/helpers/run/cmps $1"

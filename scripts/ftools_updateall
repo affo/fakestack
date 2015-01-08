@@ -8,7 +8,13 @@ fi
 source scripts/helpers/functions
 # Create a new named screen to run processes in
 SCREEN_NAME="update_all"
-configure_screen
+if type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.$SCREEN_NAME"; then
+	echo "$SCREEN_NAME already inited."
+	echo "Delete it before proceding."
+	exit 1
+else
+	configure_screen
+fi
 
 # start all
 screen_process ctrl "scripts/helpers/update/main"
