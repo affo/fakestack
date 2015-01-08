@@ -7,7 +7,7 @@ fi
 
 source scripts/helpers/functions
 # Create a new named screen to run processes in
-export SCREEN_NAME="update_all"
+export SCREEN_NAME="updating"
 if type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.$SCREEN_NAME"; then
 	echo "$SCREEN_NAME already inited."
 	echo "Delete it before proceding."
