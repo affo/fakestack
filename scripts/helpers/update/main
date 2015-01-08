@@ -6,13 +6,16 @@ if [[ ! $? ]]; then
 	exit 1
 fi
 
+NOW=$(date +"%y-%m-%d_%H-%M-%S")
+
 # create log directory
-mkdir logs
+LOG_DIR=logs/update
+mkdir $LOG_DIR
 
 echo "Updating controller node..."
 CTRL=$(docker ps | awk '/ctrl/ {print $1}')
 
-ftools_reinstall_nova $CTRL
+ftools_reinstall_nova $CTRL | tee $LOG_DIR/ctrl.$NOW.log
 if [[ ! $? ]]; then
 	echo "CTRL not updated correctly, exiting..."
 	exit 1
@@ -23,14 +26,13 @@ fi
 # start compute nodes
 echo "Updating compute nodes..."
 CMPS=$(docker ps | awk '/cmp/ {print $1}')
-NOW=$(date +"%y-%m-%d_%H-%M-%S")
 
 i=0
 N_CMP=${#CMPS[*]}
 while [[ $i -lt $N_CMP ]]
 do
 	echo "--> updating $i"
-	./scripts/helpers/update/cmp ${CMPS[$i]} > logs/${CMPS[$i]}.$NOW.log &
+	./scripts/helpers/update/cmp ${CMPS[$i]} > $LOG_DIR/${CMPS[$i]}.$NOW.log &
 	i=$(($i+1))
 done
 
@@ -47,4 +49,4 @@ do
 done
 
 echo "ENDED."
-echo "For logs, check logs directory."
+echo "For logs, check logs/update directory."
