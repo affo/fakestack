@@ -1,0 +1,18 @@
+#!/bin/bash
+# resume on screen by name
+
+if [[ $# -eq 0 ]]; then
+	echo "Give screen name, please"
+	exit 1
+fi
+
+NAME=$1
+
+TTY=$(screen -ls | awk "/$NAME/"'{print $1}' | awk -F'.' '{print $1}')
+
+if [[ -z $TTY ]]; then
+	echo "No screen found for $NAME."
+	exit 1
+fi
+
+screen -r $TTY
