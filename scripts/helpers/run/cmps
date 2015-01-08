@@ -1,8 +1,15 @@
 #!/bin/bash
+# sleeps are added because of strange behavior
+# of screen on exit
+
+function lil_pause {
+	sleep 3
+}
 
 source fakerc
 if [[ ! $? ]]; then
 	echo "exiting"
+	lil_pause
 	exit 1
 fi
 
@@ -12,7 +19,8 @@ SHOW_STEP=5
 echo "Before going on, please check to have a LIVE CONTROLLER INSTANCE."
 read -r -p "Proceed in running compute nodes? [y/N] " response
 if [[ $response =~ !([yY][eE][sS]|[yY])$ ]]; then
-	echo "you answered NO"
+	echo "exiting..."
+	lil_pause
 	exit 1
 fi
 
@@ -20,12 +28,15 @@ source scripts/helpers/functions
 # Running one sample cmp
 # (screen has already been configured in ftools_runcmps)
 if [[ ! $(is_docker_up) ]]; then
+	echo "Docker is down..."
+	lil_pause
 	exit 1
 fi
 
 echo "Running $N_CMP as daemons."
 echo "docker ps to see status..."
 echo "Or see samplecmp screen."
+lil_pause
 
 SCREEN_NAME="running"
 screen_process samplecmp "docker run --privileged=true -ti affear/cmp:ok"
@@ -39,11 +50,12 @@ do
 	fi
 
 	docker run --privileged=true -tid affear/cmp:ok
-	i=$(($i+1))
 
 	if [[ $(($i % $SHOW_STEP)) ]]; then
 		echo $i
 	fi
+	
+	i=$(($i+1))
 done
 
 echo "All $N_CMP cmps are started... wait for stack.sh now"
