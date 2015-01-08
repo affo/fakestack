@@ -51,7 +51,7 @@ function ftools_build {
 	fi
 
 	echo "Building affear/$SHORT_NAME:ok..."
-	return is_docker_up && tar -czh . | docker build -t affear/$SHORT_NAME:ok -
+	return $(is_docker_up && tar -czh . | docker build -t affear/$SHORT_NAME:ok -)
 }
 
 function ftools_attach {
@@ -60,7 +60,7 @@ function ftools_attach {
 		return 1
 	fi
 
-	return is_docker_up && docker attach $1
+	return $(is_docker_up && docker attach $1)
 }
 
 function ftools_reinstall_nova {
@@ -69,7 +69,7 @@ function ftools_reinstall_nova {
 		return 1
 	fi
 
-	return is_docker_up && docker exec $1 ./reinstall_service.sh nova
+	return $(is_docker_up && docker exec $1 ./reinstall_service.sh nova)
 }
 
 # everything is ok
