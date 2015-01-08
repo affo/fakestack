@@ -16,4 +16,4 @@ SCREEN_NAME="running"
 configure_screen
 
 # start cmps
-screen_process cmps "scripts/helpers/run/cmps"
+screen_process cmps "scripts/helpers/run/cmps $1"

@@ -18,12 +18,25 @@ fi
 
 echo "Running $N_CMP as daemons."
 echo "docker ps to see status..."
-i=0
+echo "Or see samplecmp screen."
+
+source scripts/helpers/functions
+# Running one sample cmp
+# (screen has already been configured in ftools_runcmps)
+if [[ ! $(is_docker_up) ]]; then
+	exit 1
+fi
+screen_process samplecmp "docker run --privileged=true -ti affear/cmp:ok"
+
+i=1
 while [[ $i -lt $N_CMP ]]
 do
 	# running cmp as daemon! (-d option)
-	is_docker_up && \
-		docker run --privileged=true -tid affear/cmp:ok
+	if [[ ! $(is_docker_up) ]]; then
+		exit 1
+	fi
+
+	docker run --privileged=true -tid affear/cmp:ok
 	i=$(($i+1))
 
 	if [[ $(($i % $SHOW_STEP)) ]]; then
