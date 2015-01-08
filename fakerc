@@ -21,11 +21,10 @@ function is_docker_up {
 	return 0
 }
 
-# setting some aliases
-alias ftools_runctrl="is_docker_up && docker run --privileged=true -ti -h controller --name=ctrl affear/ctrl:ok"
-alias ftools_runcmp="is_docker_up && docker run --privileged=true -ti affear/cmp:ok"
 # add scripts to PATH
 export PATH=scripts:$PATH
+# aliases
+alias ftools_runcmp="ftools_runcmps 1"
 
 # usefull functions
 function ftools_build {

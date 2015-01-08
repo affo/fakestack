@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source fakerc
+if [[ ! $? ]]; then
+	echo "exiting"
+	exit 1
+fi
+
+N_CMP=$1
+SHOW_STEP=5
+
+echo "Before going on, please check to have a live controller instance."
+read -r -p "Proceed in running compute nodes? [y/N] " response
+if [[ $response = ^([yY][eE][sS]|[yY])$ ]]
+then
+	exit 1
+fi
+
+echo "Running $N_CMP as daemons."
+echo "docker ps to see status..."
+i=0
+while [[ $i -lt $N_CMP ]]
+do
+	# running cmp as daemon! (-d option)
+	is_docker_up && \
+		docker run --privileged=true -tid affear/cmp:ok
+	i=$(($i+1))
+
+	if [[ $(($i % $SHOW_STEP)) ]]; then
+		echo $i
+	fi
+done
+
+echo "All cmps are started... wait for stack.sh now"

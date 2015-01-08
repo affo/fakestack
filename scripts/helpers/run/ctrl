@@ -1,0 +1,15 @@
+#!/bin/bash
+
+source fakerc
+if [[ ! $? ]]; then
+	echo "exiting"
+	exit 1
+fi
+
+# running controller
+is_docker_up && docker run \
+	--privileged=true \
+	-ti \
+	-h controller \
+	--name=ctrl \
+	affear/ctrl:ok
