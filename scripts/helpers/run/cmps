@@ -31,4 +31,4 @@ do
 	fi
 done
 
-echo "All cmps are started... wait for stack.sh now"
+echo "All $N_CMP cmps are started... wait for stack.sh now"
