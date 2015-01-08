@@ -14,7 +14,6 @@ if [[ ! $? ]]; then
 fi
 
 N_CMP=$1
-SHOW_STEP=5
 
 echo "Before going on, please check to have a LIVE CONTROLLER INSTANCE."
 read -r -p "Proceed in running compute nodes? [y/N] " response
@@ -31,7 +30,7 @@ is_docker_up
 if [[ ! $? ]]; then
 	echo "Docker is down..."
 	lil_pause
-	exit 1
+	#exit 1
 fi
 
 echo "Running $N_CMP as daemons."
@@ -39,7 +38,6 @@ echo "docker ps to see status..."
 echo "Or see samplecmp screen."
 lil_pause
 
-SCREEN_NAME="running"
 screen_process samplecmp "docker run --privileged=true -ti affear/cmp:ok"
 
 i=1
@@ -53,11 +51,9 @@ do
 
 	docker run --privileged=true -tid affear/cmp:ok
 
-	if [[ $(($i % $SHOW_STEP)) ]]; then
-		echo $i
-	fi
-
 	i=$(($i+1))
 done
 
-echo "All $N_CMP cmps are started... wait for stack.sh now"
+echo "All $N_CMP cmps are started... wait for stack.sh now."
+echo "If you want to see the progress of one compute node,"
+echo "switch to samplecmp screen."
