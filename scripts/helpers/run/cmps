@@ -9,16 +9,12 @@ fi
 N_CMP=$1
 SHOW_STEP=5
 
-echo "Before going on, please check to have a live controller instance."
+echo "Before going on, please check to have a LIVE CONTROLLER INSTANCE."
 read -r -p "Proceed in running compute nodes? [y/N] " response
-if [[ $response =~ !([yY][eE][sS]|[yY])$ ]]
-then
+if [[ $response =~ !([yY][eE][sS]|[yY])$ ]]; then
+	echo "you answered NO"
 	exit 1
 fi
-
-echo "Running $N_CMP as daemons."
-echo "docker ps to see status..."
-echo "Or see samplecmp screen."
 
 source scripts/helpers/functions
 # Running one sample cmp
@@ -26,6 +22,12 @@ source scripts/helpers/functions
 if [[ ! $(is_docker_up) ]]; then
 	exit 1
 fi
+
+echo "Running $N_CMP as daemons."
+echo "docker ps to see status..."
+echo "Or see samplecmp screen."
+
+SCREEN_NAME="running"
 screen_process samplecmp "docker run --privileged=true -ti affear/cmp:ok"
 
 i=1
