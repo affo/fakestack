@@ -11,7 +11,7 @@ SHOW_STEP=5
 
 echo "Before going on, please check to have a live controller instance."
 read -r -p "Proceed in running compute nodes? [y/N] " response
-if [[ $response = ^([yY][eE][sS]|[yY])$ ]]
+if [[ $response =~ !([yY][eE][sS]|[yY])$ ]]
 then
 	exit 1
 fi
