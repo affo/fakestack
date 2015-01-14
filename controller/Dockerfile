@@ -14,8 +14,7 @@ MAINTAINER affearteam
 EXPOSE 5000 35357 9292 9191 8777 8773 8774 8775 8000 8003 8004 3306 5672 80
 
 # solve errors on non interactive mode
-# https://github.com/phusion/baseimage-docker/issues/58
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+ENV DEBIAN_FRONTEND noninteractive
 
 ################################################
 # Thanks to https://github.com/ewindisch/dockenstack
@@ -53,11 +52,13 @@ RUN apt-get install -q -y dbus; \
 # Mask python-six because the apt package can conflict with the pypi version.
 RUN apt-get remove -q -y python-six
 
-# python-pip just became collatoral damage.  reinstall it.
-RUN apt-get install -q -y python-pip
-
 # upgrade everything
 RUN apt-get upgrade -y
+
+# install pip via get-pip.py
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python get-pip.py
+RUN rm get-pip.py
 
 # Install six from pip before getting from global-requirements (due to bugs...)
 RUN pip install six
