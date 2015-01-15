@@ -15,7 +15,6 @@ if type -p screen > /dev/null && screen -ls | egrep -q "[0-9]\.$SCREEN_NAME"; th
 else
 	configure_screen
 fi
-configure_screen
 
 # start all
 screen_process ctrl "scripts/helpers/run/ctrl"
