@@ -15,12 +15,8 @@ EXPOSE 8777 8773 8774 8775
 
 # solve errors on non interactive mode
 # https://github.com/phusion/baseimage-docker/issues/58
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+ENV DEBIAN_FRONTEND noninteractive
 
-################################################
-# Thanks to https://github.com/ewindisch/dockenstack
-# Install requirements for devstack
-#
 # update, then install some utils
 RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python uuid-runtime
 # Extra requirements for pip-requirements
@@ -29,45 +25,17 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
 
-WORKDIR /
-
 # Install devstack scripts from our fork
 RUN git clone https://github.com/affear/devstack.git /devstack
 # add devstack's official upstream
 RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
+# update devstack
+RUN git -C /devstack fetch official
+RUN git -C /devstack rebase official/master
+RUN git -C /devstack pull origin master
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
-
-# Install/configure dbus for libvirt (only needed if using libvirt drivers, not docker)
-# creates symlink to /usr/bin due to bug in saucy's init script for dbus.
-RUN apt-get install -q -y dbus; \
-		ln -s /bin/dbus-daemon /usr/bin/dbus-daemon
-
-# Mask python-six because the apt package can conflict with the pypi version.
-RUN apt-get remove -q -y python-six
-
-# python-pip just became collatoral damage.  reinstall it.
-RUN apt-get install -q -y python-pip
-
-# upgrade everything
-RUN apt-get upgrade -y
-
-# Install six from pip before getting from global-requirements (due to bugs...)
-RUN pip install six
-
-# Install all pip requirements
-RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
-# Remove marconi and zaqar client due to conflict in str opts.
-RUN sed '/marconiclient/d' global-requirements.txt
-RUN sed '/zaqarclient/d' global-requirements.txt
-RUN pip install -r global-requirements.txt
-RUN rm /global-requirements.txt
-# be really sure that marconi and zaqar aren't installed
-RUN pip uninstall -y python-marconiclient
-RUN pip uninstall -y python-zaqarclient
-# Thanks to https://github.com/ewindisch/dockenstack
-##############################################################
 
 # add localrc to devstack's root dir
 ADD local.conf /devstack/
