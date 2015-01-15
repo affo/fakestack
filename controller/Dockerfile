@@ -40,6 +40,10 @@ RUN apt-get -qqy install rabbitmq-server
 RUN git clone https://github.com/affear/devstack.git /devstack
 # add devstack's official upstream
 RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
+# update devstack
+RUN git -C /devstack fetch official
+RUN git -C /devstack rebase official/master
+RUN git -C /devstack pull origin master
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
@@ -55,22 +59,17 @@ RUN apt-get remove -q -y python-six
 # upgrade everything
 RUN apt-get upgrade -y
 
-# install pip via get-pip.py
-RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN python get-pip.py
-RUN rm get-pip.py
+# install pip
+RUN /devstack/tools/install_pip.sh
 
 # Install six from pip before getting from global-requirements (due to bugs...)
 RUN pip install six
 
 # Install all pip requirements
 RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
-# Remove marconi and zaqar client due to conflict in str opts.
-RUN sed '/marconiclient/d' global-requirements.txt
-RUN sed '/zaqarclient/d' global-requirements.txt
 RUN pip install -r global-requirements.txt
 RUN rm /global-requirements.txt
-# be really sure that marconi and zaqar aren't installed
+# Remove marconi and zaqar client due to conflict in str opts.
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
 # Thanks to https://github.com/ewindisch/dockenstack
