@@ -16,10 +16,6 @@ EXPOSE 5000 35357 9292 9191 8777 8773 8774 8775 8000 8003 8004 3306 5672 80
 # solve errors on non interactive mode
 ENV DEBIAN_FRONTEND noninteractive
 
-################################################
-# Thanks to https://github.com/ewindisch/dockenstack
-# Install requirements for devstack
-#
 # update, then install some utils
 RUN apt-get update && apt-get install -y sed git socat curl sudo apt-transport-https vim wget net-tools python uuid-runtime
 # Extra requirements for pip-requirements
@@ -47,33 +43,6 @@ RUN git -C /devstack pull origin master
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
-
-# Install/configure dbus for libvirt (only needed if using libvirt drivers, not docker)
-# creates symlink to /usr/bin due to bug in saucy's init script for dbus.
-RUN apt-get install -q -y dbus; \
-		ln -s /bin/dbus-daemon /usr/bin/dbus-daemon
-
-# Mask python-six because the apt package can conflict with the pypi version.
-RUN apt-get remove -q -y python-six
-# remove lockfile due to version conflict
-RUN apt-get remove -q -y python-lockfile
-
-# upgrade everything
-RUN apt-get upgrade -y
-
-# install pip
-RUN apt-get install -q -y python-pip
-
-# Install six from pip before getting from global-requirements (due to bugs...)
-RUN pip install six
-
-# Install all pip requirements
-RUN pip install -r https://raw.github.com/openstack/requirements/master/global-requirements.txt
-# Remove marconi and zaqar client due to conflict in str opts.
-RUN pip uninstall -y python-marconiclient
-RUN pip uninstall -y python-zaqarclient
-# Thanks to https://github.com/ewindisch/dockenstack
-##############################################################
 
 # add localrc to devstack's root dir
 ADD local.conf /devstack/
