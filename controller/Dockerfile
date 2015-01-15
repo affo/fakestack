@@ -55,20 +55,20 @@ RUN apt-get install -q -y dbus; \
 
 # Mask python-six because the apt package can conflict with the pypi version.
 RUN apt-get remove -q -y python-six
+# remove lockfile due to version conflict
+RUN apt-get remove -q -y python-lockfile
 
 # upgrade everything
 RUN apt-get upgrade -y
 
 # install pip
-RUN /devstack/tools/install_pip.sh
+RUN apt-get install -q -y python-pip
 
 # Install six from pip before getting from global-requirements (due to bugs...)
 RUN pip install six
 
 # Install all pip requirements
-RUN wget https://raw.github.com/openstack/requirements/master/global-requirements.txt
-RUN pip install -r global-requirements.txt
-RUN rm /global-requirements.txt
+RUN pip install -r https://raw.github.com/openstack/requirements/master/global-requirements.txt
 # Remove marconi and zaqar client due to conflict in str opts.
 RUN pip uninstall -y python-marconiclient
 RUN pip uninstall -y python-zaqarclient
