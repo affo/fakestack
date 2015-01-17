@@ -56,16 +56,16 @@ If you have to run your image, choose the best configuration being aware of this
 Controller:
 
 ```
-	$ docker run --privileged=true -tid -h controller --name=ctrl affear/controller:latest
+	$ docker run --privileged=true -tid -h controller --name=ctrl affear/fakectrl
 ```
 
 Compute nodes:
 
 ```
-	$ docker run --privileged=true -tid affear/compute:latest
-	$ docker run --privileged=true -tid affear/compute:latest
-	$ docker run --privileged=true -tid affear/compute:latest
-	$ docker run --privileged=true -tid affear/compute:latest
+	$ docker run --privileged=true -tid affear/fakecmp
+	$ docker run --privileged=true -tid affear/fakecmp
+	$ docker run --privileged=true -tid affear/fakecmp
+	$ docker run --privileged=true -tid affear/fakecmp
 	... # as many as you want(can)
 ```
 
