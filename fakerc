@@ -55,8 +55,8 @@ function ftools_build {
 		return 1
 	fi
 
-	echo "Building affear/$SHORT_NAME:ok..."
-	tar -czh . | docker build -t affear/$SHORT_NAME:ok -
+	echo "Building affear/fake$SHORT_NAME:alpha..."
+	tar -czh . | docker build -t affear/fake$SHORT_NAME:alpha -
 	return 0
 }
 
