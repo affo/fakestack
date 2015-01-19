@@ -41,11 +41,6 @@ else
 	echo "connection OK."
 fi
 
-# update devstack
-su stack -c 'git -C /devstack fetch official'
-su stack -c 'git -C /devstack rebase official/master'
-su stack -c 'git -C /devstack pull origin master'
-
 start_service mysql
 start_service rabbitmq-server
 su stack -c '/devstack/stack.sh'

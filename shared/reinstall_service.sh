@@ -12,11 +12,6 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-# update devstack
-git -C /devstack fetch official
-git -C /devstack rebase official/master
-git -C /devstack pull origin master
-
 # prevent apt-get to give problems...
 # badass way...
 sudo rm /var/lib/apt/lists/lock

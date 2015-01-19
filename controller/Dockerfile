@@ -32,14 +32,8 @@ RUN echo 'mysql-server mysql-server/root_password password pwstack' | debconf-se
 # Install RabbitMQ
 RUN apt-get -qqy install rabbitmq-server
 
-# Install devstack scripts from our fork
-RUN git clone https://github.com/affear/devstack.git /devstack
-# add devstack's official upstream
-RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
-# update devstack
-RUN git -C /devstack fetch official
-RUN git -C /devstack rebase official/master
-RUN git -C /devstack pull origin master
+# Install devstack
+RUN git clone https://github.com/openstack-dev/devstack.git /devstack
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh

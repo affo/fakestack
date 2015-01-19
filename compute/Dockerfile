@@ -25,14 +25,8 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
 
-# Install devstack scripts from our fork
-RUN git clone https://github.com/affear/devstack.git /devstack
-# add devstack's official upstream
-RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
-# update devstack
-RUN git -C /devstack fetch official
-RUN git -C /devstack rebase official/master
-RUN git -C /devstack pull origin master
+# Install devstack
+RUN git clone https://github.com/openstack-dev/devstack.git /devstack
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh
