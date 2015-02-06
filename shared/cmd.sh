@@ -41,10 +41,14 @@ else
 	echo "connection OK."
 fi
 
-# update devstack
-su stack -c 'git -C /devstack fetch official'
-su stack -c 'git -C /devstack rebase official/master'
-su stack -c 'git -C /devstack pull origin master'
+# update devstack:
+# pull from upstream on master
+su stack -c 'git -C /devstack checkout master'
+su stack -c 'git -C /devstack pull upstream master'
+# checkout to our branch
+su stack -c 'git -C /devstack checkout n-cons'
+# rebase changes
+su stack -c 'git -C /devstack rebase master'
 
 start_service mysql
 start_service rabbitmq-server

@@ -28,11 +28,15 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 # Install devstack scripts from our fork
 RUN git clone https://github.com/affear/devstack.git /devstack
 # add devstack's official upstream
-RUN git -C /devstack remote add official https://github.com/openstack-dev/devstack.git
-# update devstack
-RUN git -C /devstack fetch official
-RUN git -C /devstack rebase official/master
-RUN git -C /devstack pull origin master
+RUN git -C /devstack remote add upstream https://github.com/openstack-dev/devstack.git
+# update devstack:
+# pull from upstream on master
+RUN git -C /devstack pull upstream master
+# checkout to our branch
+RUN git -C /devstack checkout n-cons
+# rebase changes
+RUN git -C /devstack rebase master
+
 
 # Install prereq packages.
 RUN /devstack/tools/install_prereqs.sh

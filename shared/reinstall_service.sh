@@ -12,10 +12,14 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-# update devstack
-git -C /devstack fetch official
-git -C /devstack rebase official/master
-git -C /devstack pull origin master
+# update devstack:
+# pull from upstream on master
+git -C /devstack checkout master
+git -C /devstack pull upstream master
+# checkout to our branch
+git -C /devstack checkout n-cons
+# rebase changes
+git -C /devstack rebase master
 
 # prevent apt-get to give problems...
 # badass way...
