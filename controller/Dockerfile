@@ -24,6 +24,10 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
 
+# configure git
+RUN git config --global user.email "affear.team@gmail.com"
+RUN git config --global user.name "Affear Team"
+
 # Configure and install MySQL
 RUN echo 'mysql-server mysql-server/root_password password pwstack' | debconf-set-selections; \
 		echo 'mysql-server mysql-server/root_password_again password pwstack' | debconf-set-selections; \

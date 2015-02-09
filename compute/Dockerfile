@@ -25,6 +25,10 @@ RUN apt-get install -qqy libffi-dev libkrb5-dev \
 		pkg-config libnspr4-dev libxml2-dev libxslt1-dev \
 		libvirt-dev
 
+# configure git
+RUN git config --global user.email "affear.team@gmail.com"
+RUN git config --global user.name "Affear Team"
+
 # Install devstack scripts from our fork
 RUN git clone https://github.com/affear/devstack.git /devstack
 # add devstack's official upstream
