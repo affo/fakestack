@@ -38,7 +38,7 @@ echo "docker ps to see status..."
 echo "Or see samplecmp screen."
 lil_pause
 
-screen_process samplecmp "docker run --privileged=true --rm -ti -v $(pwd)/compute/local.conf:/devstack/local.conf affear/fakecmp:alpha"
+screen_process samplecmp "docker run --privileged=true -ti -v $(pwd)/compute/local.conf:/devstack/local.conf affear/fakecmp:alpha"
 
 i=1
 while [[ $i -lt $N_CMP ]]
@@ -49,7 +49,7 @@ do
 		exit 1
 	fi
 
-	docker run --privileged=true --rm -tid -v $(pwd)/compute/local.conf:/devstack/local.conf affear/fakecmp:alpha
+	docker run --privileged=true -tid -v $(pwd)/compute/local.conf:/devstack/local.conf affear/fakecmp:alpha
 
 	i=$(($i+1))
 done
