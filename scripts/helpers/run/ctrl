@@ -12,4 +12,6 @@ is_docker_up && docker run \
 	-ti \
 	-h controller \
 	--name=ctrl \
+	--rm \
+	-v $(pwd)/controller/local.conf:/devstack/local.conf \
 	affear/fakectrl:alpha
