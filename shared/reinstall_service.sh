@@ -31,6 +31,8 @@ if [ $(hostname) = "controller" ]; then
 	# doesn't work...
 	sudo apt-get -qqy install mysql-server
 	sudo apt-get -qqy install rabbitmq-server
+	# be really sure rabbit is down! (using standard port)
+	sudo pkill $(sudo netstat -anp | awk '/5672/ {print $7}' | awk -F "/" '{print $2}')
 	# and start them
 	sudo service mysql start
 	sudo service rabbitmq-server start
