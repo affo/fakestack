@@ -3,7 +3,7 @@
 i=0
 exit_val=0
 while $exit_val; do
-	exit_val=$(ftools_post_usage $i before)
+	exit_val=$(ftools_post_usage before)
 	docker run \
 	--privileged=true \
 	-tid \
@@ -11,6 +11,6 @@ while $exit_val; do
 	-v $(pwd)/shared/cmd.sh:/cmd.sh \
 	affear/fakecmp:alpha
 
-	exit_val=$(ftools_post_usage $i after)
+	exit_val=$(ftools_post_usage after)
 	$i=$(($i + 1))
 done

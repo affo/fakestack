@@ -1,6 +1,6 @@
 #!/bin/bash
-no_spawn=$1
-before_or_after=$2
+label=$1
+t=$(date +"%m_%d_%Y__%H_%S")
 FIREBASE_BASE_URL='https://adock.firebaseio.com'
 
 echo 'Retrieving usage data...'
@@ -28,7 +28,7 @@ formatted_cpu=$(echo $avg_cpu | awk '{printf "%f", $0}')
 formatted_ram=$(echo $ram_perc | awk '{printf "%f", $0}')
 
 curl -X PUT -d '{"cpu_r_used": '$formatted_cpu', "ram_r_used": '$formatted_ram'}' \
-	$FIREBASE_BASE_URL'/'$(hostname)'/usage/'$no_spawn'/'$before_or_after'.json'
+	$FIREBASE_BASE_URL'/'$(hostname)'/usage/'$t'/'$label'.json'
 
 if [[ $(echo $formatted_cpu' > 95' | bc) -eq 1 || $(echo $formatted_ram' > 95' | bc) -eq 1 ]]; then
 	# saturation condition
