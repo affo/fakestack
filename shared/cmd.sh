@@ -36,7 +36,7 @@ function get_usage_data {
 
 function run_stack {
 	TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2> .elapsed_time
-	ex_time=$(cat .elapsed_time | awk 'END{print $1}'))
+	ex_time=$(cat .elapsed_time | awk 'END{print $1}')
 	return '{"time_s": '$ex_time'}'
 }
 
