@@ -1,5 +1,9 @@
 #!/bin/bash
 
+FIREBASE_BASE_URL='https://adock.firebaseio.com'
+NODE_TYPE='cmp'
+IP=$(ifconfig  | grep 'inet addr:'| grep '42.42.*' | cut -d: -f2 | awk '{ print $1}')
+
 function start_service {
 	if [ -f "/etc/init.d/$1" ]; then
 		#the service is there
@@ -9,27 +13,27 @@ function start_service {
 	fi
 }
 
-# editing /etc/hosts for rabbit and openstack
-sudo sh -c "echo '127.0.0.1 localhost' > /etc/hosts"
-sudo sh -c "echo '42.42.255.254 controller' >> /etc/hosts"
+function post_usage {
+	i=0
+	avg_cpu=0
+	avg_ram=0
+	for i in {1..10} do
+		sleep 1
+		cpu=$(mpstat | awk 'FNR == 4 {print $3}')
+		total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
+		free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
+		used=$(($total - $free))
+		i=$(($i + 1))
+		avg_cpu=$(bc <<< 'scale = 5; ($avg_cpu + $cpu) / $i')
+		avg_ram=$(bc <<< 'scale = 5; ($avg_ram + $used) / $i')
+	done
 
-CTRL_IP=42.42.255.254/16
-GW_IP=42.42.0.1
+	data='{"cpu": '$avg_cpu', "ram: "'$avg_ram'}'
+	curl -X PUT -d $data $FIREBASE_BASE_URL'/'$IP'/usage/'$(date +"%m_%d_%Y__%H_%S")'.json'
+}
+
 if [ $(hostname) = "controller" ]; then
-	# we are in the controller:
-	# change ip
-	sudo ifconfig eth0 $CTRL_IP
-	echo "controller: eth0 IP set to $CTRL_IP"
-	sudo route add default gw $GW_IP eth0
-	echo "default gateway set to $GW_IP"
-else
-	my_ip=$(ifconfig  | grep 'inet addr:'| grep '42.42.*' | cut -d: -f2 | awk '{ print $1}')
-	sudo sh -c "echo '$my_ip $(hostname)' >> /etc/hosts"
-fi
-
-echo "--> /etc/hosts edited!"
-echo "--> cat /etc/hosts:"
-cat /etc/hosts
+	NODE_TYPE='ctrl'
 
 # test connection with Google's DNS
 echo "checking connection..."
@@ -43,7 +47,11 @@ fi
 
 start_service mysql
 start_service rabbitmq-server
-su stack -c '/devstack/stack.sh'
+# get the time of stack.sh execution
+EXECUTION_TIME=$(TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2>&1 | awk 'END{print $1}')
+# post it on firebase
+curl -X PUT -d '{"time_s": '$EXECUTION_TIME'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
+post_usage()
 # change escape sequence
 stty intr \^k
 echo "To KILL the process press CTRL-K"
