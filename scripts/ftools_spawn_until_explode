@@ -2,7 +2,7 @@
 
 i=0
 exit_val=0
-while $exit_val do
+while $exit_val; do
 	exit_val=$(ftools_post_usage $i before)
 	docker run \
 	--privileged=true \
