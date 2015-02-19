@@ -35,12 +35,14 @@ function get_usage_data {
 }
 
 function run_stack {
-	TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2> .elapsed_time
+	TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh' 2>&1) 2> .elapsed_time
 	ex_time=$(cat .elapsed_time | awk 'END{print $1}')
 	return '{"time_s": '$ex_time'}'
 }
 
 ######### cmd
+echo 'installing mpstat...'
+sudo apt-get install -y sysstat
 
 if [ $(hostname) = "controller" ]; then
 	NODE_TYPE='ctrl'
