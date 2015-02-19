@@ -48,7 +48,7 @@ start_service rabbitmq-server
 start=$(date +%s)
 su stack -c '/devstack/stack.sh'
 end=$(date +%s)
-ex_time=$(($start-$end))
+ex_time=$(($end - $start))
 #post it
 curl -X PUT -d '{"time_s": '$ex_time'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
 # change escape sequence
