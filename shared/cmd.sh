@@ -13,7 +13,7 @@ function start_service {
 	fi
 }
 
-function post_usage {
+function get_usage_data {
 	i=0
 	avg_cpu=0
 	avg_ram=0
@@ -30,8 +30,15 @@ function post_usage {
 
 	ram_perc=$(bc <<< 'scale = 5; $avg_ram / $ram_total')
 	data='{"cpu_r_used": '$avg_cpu', "ram_r_used: "'$ram_perc'}'
-	curl -X PUT -d $data $FIREBASE_BASE_URL'/'$IP'/usage/'$(date +"%m_%d_%Y__%H_%S")'.json'
+	return $data
 }
+
+function run_stack {
+	ex_time=$(TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2>&1 | awk 'END{print $1}')
+	return '{"time_s": '$ex_time'}'
+}
+
+######### cmd
 
 if [ $(hostname) = "controller" ]; then
 	NODE_TYPE='ctrl'
@@ -48,11 +55,11 @@ fi
 
 start_service mysql
 start_service rabbitmq-server
-# get the time of stack.sh execution
-EXECUTION_TIME=$(TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2>&1 | awk 'END{print $1}')
 # post it on firebase
-curl -X PUT -d '{"time_s": '$EXECUTION_TIME'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
-post_usage
+data=$(run_stack)
+curl -X PUT -d $data $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
+data=$(get_usage_data)
+curl -X PUT -d $data $FIREBASE_BASE_URL'/'$IP'/usage/'$(date +"%m_%d_%Y__%H_%S")'.json'
 # change escape sequence
 stty intr \^k
 echo "To KILL the process press CTRL-K"
