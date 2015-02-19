@@ -34,14 +34,6 @@ function post_data {
 	curl -X PUT -d $data $FIREBASE_BASE_URL'/'$IP'/usage/'$(date +"%m_%d_%Y__%H_%S")'.json'
 }
 
-function run_stack {
-	start=$(date +%s)
-	su stack -c '/devstack/stack.sh'
-	end=$(date +%s)
-	ex_time=$(($start-$end))
-	return $ex_time
-}
-
 ######### cmd
 echo 'installing mpstat...'
 sudo apt-get install -y sysstat
@@ -62,8 +54,12 @@ fi
 
 start_service mysql
 start_service rabbitmq-server
-# post it on firebase
-ex_time=$(run_stack)
+# calculate execution time
+start=$(date +%s)
+su stack -c '/devstack/stack.sh'
+end=$(date +%s)
+ex_time=$(($start-$end))
+#post it
 data='{"time_s": '$ex_time'}'
 curl -X PUT -d '$data' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
 post_data
