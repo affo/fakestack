@@ -19,7 +19,7 @@ function get_usage_data {
 	avg_cpu=0
 	avg_ram=0
 	ram_total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
-	for i in {1..10} do
+	for i in {1..10}; do
 		cpu=$(mpstat | awk 'FNR == 4 {print $3}')
 		ram_free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
 		ram_used=$(($ram_total - $ram_free))
@@ -43,6 +43,7 @@ function run_stack {
 
 if [ $(hostname) = "controller" ]; then
 	NODE_TYPE='ctrl'
+fi
 
 # test connection with Google's DNS
 echo "checking connection..."
