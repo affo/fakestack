@@ -17,18 +17,19 @@ function post_usage {
 	i=0
 	avg_cpu=0
 	avg_ram=0
+	ram_total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
 	for i in {1..10} do
 		sleep 1
 		cpu=$(mpstat | awk 'FNR == 4 {print $3}')
-		total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
-		free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
-		used=$(($total - $free))
+		ram_free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
+		ram_used=$(($ram_total - $ram_free))
 		i=$(($i + 1))
 		avg_cpu=$(bc <<< 'scale = 5; ($avg_cpu + $cpu) / $i')
-		avg_ram=$(bc <<< 'scale = 5; ($avg_ram + $used) / $i')
+		avg_ram=$(bc <<< 'scale = 5; ($avg_ram + $ram_used) / $i')
 	done
 
-	data='{"cpu": '$avg_cpu', "ram: "'$avg_ram'}'
+	ram_perc=$(bc <<< 'scale = 5; $avg_ram / $ram_total')
+	data='{"cpu_r_used": '$avg_cpu', "ram_r_used: "'$ram_perc'}'
 	curl -X PUT -d $data $FIREBASE_BASE_URL'/'$IP'/usage/'$(date +"%m_%d_%Y__%H_%S")'.json'
 }
 
@@ -51,7 +52,7 @@ start_service rabbitmq-server
 EXECUTION_TIME=$(TIMEFORMAT='%R'; (time su stack -c '/devstack/stack.sh') 2>&1 | awk 'END{print $1}')
 # post it on firebase
 curl -X PUT -d '{"time_s": '$EXECUTION_TIME'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(date +"%m_%d_%Y__%H_%S")'.json'
-post_usage()
+post_usage
 # change escape sequence
 stty intr \^k
 echo "To KILL the process press CTRL-K"
