@@ -55,4 +55,4 @@ curl -X PUT -d '{"time_s": '$ex_time'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE
 stty intr \^k
 echo "To KILL the process press CTRL-K"
 # run shell to stay on
-sudo su stack &
+sudo su stack
