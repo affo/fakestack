@@ -13,6 +13,10 @@ function start_service {
 }
 
 ######### cmd
+# editing /etc/hosts for rabbit and openstack
+sudo sh -c "echo '127.0.0.1 localhost' > /etc/hosts"
+sudo sh -c "echo '42.42.255.254 controller' >> /etc/hosts"
+
 CTRL_IP=42.42.255.254/16
 GW_IP=42.42.0.1
 if [ $(hostname) = "controller" ]; then
