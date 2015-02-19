@@ -14,18 +14,19 @@ function start_service {
 }
 
 function get_usage_data {
+	echo 'Retrieving usage data...'
 	i=0
 	avg_cpu=0
 	avg_ram=0
 	ram_total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
 	for i in {1..10} do
-		sleep 1
 		cpu=$(mpstat | awk 'FNR == 4 {print $3}')
 		ram_free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
 		ram_used=$(($ram_total - $ram_free))
 		i=$(($i + 1))
 		avg_cpu=$(bc <<< 'scale = 5; ($avg_cpu + $cpu) / $i')
 		avg_ram=$(bc <<< 'scale = 5; ($avg_ram + $ram_used) / $i')
+		sleep 1
 	done
 
 	ram_perc=$(bc <<< 'scale = 5; $avg_ram / $ram_total')
