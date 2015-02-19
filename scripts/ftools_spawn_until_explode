@@ -1,0 +1,16 @@
+#!/bin/bash
+
+i=0
+exit_val=0
+while $exit_val do
+	exit_val=$(ftools_post_usage $i before)
+	docker run \
+	--privileged=true \
+	-tid \
+	-v $(pwd)/compute/local.conf:/devstack/local.conf \
+	-v $(pwd)/shared/cmd.sh:/cmd.sh \
+	affear/fakecmp:alpha
+
+	exit_val=$(ftools_post_usage $i after)
+	$i=$(($i + 1))
+done

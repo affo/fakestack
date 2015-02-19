@@ -1,0 +1,39 @@
+#!/bin/bash
+no_spawn=$1
+before_or_after=$2
+FIREBASE_BASE_URL='https://adock.firebaseio.com'
+
+echo 'Retrieving usage data...'
+
+avg_cpu=0
+avg_ram=0
+ram_total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
+
+for i in {1..10}; do
+	cpu=$(mpstat | awk 'FNR == 4 {print $3}' | tr , .)
+	ram_free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
+	ram_used=$(($ram_total - $ram_free))
+
+	echo 'STEP'$i
+	avg_cpu=$(echo 'scale = 5; ('$avg_cpu' + '$cpu') / '$i | bc)
+	avg_ram=$(echo 'scale = 5; ('$avg_ram' + '$ram_used') / '$i | bc)
+	echo 'avg_cpu: '$avg_cpu
+	echo 'avg_ram: '$avg_ram
+
+	i=$(($i + 1))
+	sleep 1
+done
+
+ram_perc=$(echo 'scale = 5; ('$avg_ram' / '$ram_total') * 100' | bc)
+formatted_cpu=$(echo $avg_cpu | awk '{printf "%f", $0}')
+formatted_ram=$(echo $ram_perc | awk '{printf "%f", $0}')
+
+curl -X PUT -d '{"cpu_r_used": '$formatted_cpu', "ram_r_used": '$formatted_ram'}' \
+	$FIREBASE_BASE_URL'/'$(hostname)'/usage/'$no_spawn'/'$before_or_after'.json'
+
+if [[ $(echo "$ram_perc > 95" | bc) -eq 1 || $(echo "$ram_cpu > 95" | bc) -eq 1 ]]; then
+	# saturation condition
+	exit 1
+fi
+
+exit 0
