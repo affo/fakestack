@@ -13,4 +13,3 @@ for i in $(seq 1 $no_parallel); do
 	-v $(pwd)/shared/cmd.sh:/cmd.sh \
 	affear/fakecmp:alpha
 done
-ftools_post_usage $no_parallel'inparallel__'$t after
