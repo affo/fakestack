@@ -1,0 +1,16 @@
+#!/bin/bash
+no_parallel=${1:-1}
+t=$(date +"%m_%d_%Y__%H_%S")
+
+
+echo "Spawning "$no_parallel" cmps..."
+ftools_post_usage $no_parallel'inparallel__'$t before
+for i in $(seq 1 $no_parallel); do
+	docker run \
+	--privileged=true \
+	-tid \
+	-v $(pwd)/compute/local.conf:/devstack/local.conf \
+	-v $(pwd)/shared/cmd.sh:/cmd.sh \
+	affear/fakecmp:alpha
+done
+ftools_post_usage $no_parallel'inparallel__'$t after
