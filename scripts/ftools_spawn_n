@@ -1,10 +1,12 @@
 #!/bin/bash
 no_parallel=${1:-1}
 t=$(date +"%m_%d_%Y__%H_%S")
+default_label=$no_parallel'inparallel__'$t
+label=${2:-$default_label}
 
 
 echo "Spawning "$no_parallel" cmps..."
-ftools_post_usage $no_parallel'inparallel__'$t before
+ftools_post_usage $label before
 for i in $(seq 1 $no_parallel); do
 	docker run \
 	--privileged=true \
