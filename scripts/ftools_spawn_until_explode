@@ -1,8 +1,15 @@
 #!/bin/bash
 
+spacing=$1
+
+if [[ -z "$spacing" ]]; then
+	echo "Provide spacing between spawns (s)"
+	exit 1
+fi
+
 i=0
 exit_val=0
-while $exit_val; do
+while [[ $exit_val -eq 0 ]]; do
 	exit_val=$(ftools_post_usage before)
 	docker run \
 	--privileged=true \
@@ -13,4 +20,6 @@ while $exit_val; do
 
 	exit_val=$(ftools_post_usage after)
 	$i=$(($i + 1))
+
+	sleep $spacing
 done
