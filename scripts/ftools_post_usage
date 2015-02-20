@@ -7,30 +7,38 @@ echo 'Retrieving usage data...'
 
 avg_cpu=0
 avg_ram=0
+avg_swap=0
 ram_total=$(cat /proc/meminfo | awk '/MemTotal/ {print $2}')
+swap_total=$(cat /proc/meminfo | awk '/SwapTotal/ {print $2}')
 
 for i in {1..10}; do
 	cpu=$(mpstat | awk 'FNR == 4 {print $3}' | tr , .)
 	ram_free=$(cat /proc/meminfo | awk '/MemFree/ {print $2}')
+	swap_free=$(cat /proc/meminfo | awk '/SwapFree/ {print $2}')
 	ram_used=$(($ram_total - $ram_free))
+	swap_used=$(($swap_total - $swap_free))
 
 	avg_cpu=$(echo 'scale = 5; ('$avg_cpu' + '$cpu')' | bc)
 	avg_ram=$(echo 'scale = 5; ('$avg_ram' + '$ram_used')' | bc)
+	avg_swap=$(echo 'scale = 5; ('$avg_swap' + '$swap_used')' | bc)
 
 	sleep 1
 done
 
 avg_cpu=$(echo 'scale = 5; ('$avg_cpu' / 10)' | bc)
 avg_ram=$(echo 'scale = 5; ('$avg_ram' / 10)' | bc)
+avg_swap=$(echo 'scale = 5; ('$avg_swap' / 10)' | bc)
 
 ram_perc=$(echo 'scale = 5; ('$avg_ram' / '$ram_total') * 100' | bc)
+swap_perc=$(echo 'scale = 5; ('$avg_swap' / '$swap_total') * 100' | bc)
 formatted_cpu=$(echo $avg_cpu | awk '{printf "%f", $0}')
 formatted_ram=$(echo $ram_perc | awk '{printf "%f", $0}')
+formatted_swap=$(echo $swap_perc | awk '{printf "%f", $0}')
 
-curl -X PUT -d '{"cpu_r_used": '$formatted_cpu', "ram_r_used": '$formatted_ram'}' \
+curl -X PUT -d '{"cpu_r_used": '$formatted_cpu', "ram_r_used": '$formatted_ram', "swap_r_used": '$formatted_swap'}' \
 	$FIREBASE_BASE_URL'/'$(hostname)'/usage/'$t'/'$label'.json'
 
-if [[ $(echo $formatted_cpu' > 95' | bc) -eq 1 || $(echo $formatted_ram' > 95' | bc) -eq 1 ]]; then
+if [[ $(echo $formatted_swap' > 95' | bc) -eq 1 ]]; then
 	# saturation condition
 	exit 1
 fi
