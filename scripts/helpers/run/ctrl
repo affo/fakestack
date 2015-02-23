@@ -14,4 +14,4 @@ is_docker_up && docker run \
 	--name=ctrl \
 	--rm \
 	-v $(pwd)/controller/local.conf:/devstack/local.conf \
-	affear/fakectrl:alpha
+	affear/fakectrl:mydev

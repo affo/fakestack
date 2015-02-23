@@ -30,6 +30,7 @@ alias ftools_runcmp="ftools_runcmps 1"
 function ftools_build {
 	local SHORT_NAME=$1
 	local LONG_NAME
+	local TAG='mydev'
 
 	if [ $# -eq 0 ]; then
 		echo "Give short name, please."
@@ -55,8 +56,8 @@ function ftools_build {
 		return 1
 	fi
 
-	echo "Building affear/fake$SHORT_NAME:alpha..."
-	tar -czh . | docker build -t affear/fake$SHORT_NAME:alpha -
+	echo "Building affear/fake$SHORT_NAME:$TAG..."
+	tar -czh . | docker build -t affear/fake$SHORT_NAME:$TAG -
 	return 0
 }
 
