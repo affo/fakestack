@@ -2,6 +2,7 @@
 
 FIREBASE_BASE_URL='https://adock.firebaseio.com'
 NODE_TYPE='cmp'
+HOST='oasis'
 
 function start_service {
 	if [ -f "/etc/init.d/$1" ]; then
@@ -50,7 +51,7 @@ su stack -c '/devstack/stack.sh'
 end=$(date +%s)
 ex_time=$(($end - $start))
 #post it
-curl -X PUT -d '{"time_s": '$ex_time'}' $FIREBASE_BASE_URL'/stack_sh/'$NODE_TYPE'/'$(hostname)'.json'
+curl -X PUT -d '{"time_s": '$ex_time'}' $FIREBASE_BASE_URL'/stack_sh/'$HOST'/'$NODE_TYPE'/'$(hostname)'.json'
 # change escape sequence
 stty intr \^k
 echo "To KILL the process press CTRL-K"
