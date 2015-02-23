@@ -6,7 +6,6 @@ label=${2:-$default_label}
 
 
 echo "Spawning "$no_parallel" cmps..."
-ftools_post_usage $label before
 for i in $(seq 1 $no_parallel); do
 	docker run \
 	--privileged=true \
