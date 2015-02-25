@@ -14,4 +14,5 @@ is_docker_up && docker run \
 	--name=ctrl \
 	--rm \
 	-v $(pwd)/controller/local.conf:/devstack/local.conf \
+	-v $(pwd)/shared/update_quotas.sh:/devstack/update_quotas.sh \
 	affear/fakectrl:mydev
